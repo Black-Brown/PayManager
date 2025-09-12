@@ -2,23 +2,22 @@
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', 'admin');
-define('DB_NAME', 'paymanager_DB');
+define('DB_NAME', '');
 
-class database {
-
-    private $conn;
+class Database {
+    private PDO $conn;
 
     public function __construct() {
-        $this->conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-        if($this->conn->connect_error){
-            die("error al conectar con la base de dato");
-        } else {
-            echo "<script>console.log('conexion a las base de dato exitosa')</script>";
+        try {
+            $this->conn = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            echo "<script>console.log('Conexión a la base de datos exitosa')</script>";
+        } catch (PDOException $e) {
+            die("❌ Error de conexión: " . $e->getMessage());
         }
     }
 
-    public function getDB(){
+    public function getDB(): PDO {
         return $this->conn;
     }
-
 }
