@@ -1,7 +1,13 @@
 <?php
-require('../config/database.php');
 
-echo "welcome to Jheinel's house";
+require_once __DIR__ . '/../vendor/autoload.php';
 
-$db = new database();
-$this->conn = $db->getDB();
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+
+// Cargar las vistas desde la carpeta /views
+$loader = new FilesystemLoader(__DIR__ . '/../views');
+$twig = new Environment($loader);
+
+// Renderizar la plantilla index.html.twig
+echo $twig->render('pages/index.html.twig');
