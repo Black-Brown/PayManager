@@ -4,16 +4,49 @@ const sidebar = document.getElementById('sidebar');
 const mainContent = document.getElementById('mainContent');
 const overlay = document.getElementById('overlay');
 
+// Check if mobile view
+function isMobile() {
+    return window.innerWidth <= 768;
+}
+
+// Initialize sidebar state based on screen size
+function initializeSidebar() {
+    if (isMobile()) {
+        sidebar.classList.remove('active');
+        sidebar.classList.add('hidden');
+        mainContent.classList.remove('sidebar-hidden');
+        overlay.classList.remove('active');
+    } else {
+        sidebar.classList.remove('hidden');
+        sidebar.classList.remove('active');
+        mainContent.classList.remove('sidebar-hidden');
+        overlay.classList.remove('active');
+    }
+}
+
 menuToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
-    mainContent.classList.toggle('sidebar-open');
-    overlay.classList.toggle('active');
+    if (isMobile()) {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+    } else {
+        sidebar.classList.toggle('hidden');
+        mainContent.classList.toggle('sidebar-hidden');
+    }
 });
 
 overlay.addEventListener('click', () => {
     sidebar.classList.remove('active');
-    mainContent.classList.remove('sidebar-open');
     overlay.classList.remove('active');
+});
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    initializeSidebar();
+});
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    initializeSidebar();
 });
 
 // Navigation function
