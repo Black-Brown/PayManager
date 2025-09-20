@@ -15,6 +15,7 @@
         }
     ],
     "require": {
-        "twig/twig": "^3.21"
+        "twig/twig": "^3.21",
+        "arkham-dev/framework": "^1.5"
     }
 }
