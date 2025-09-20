@@ -1,0 +1,585 @@
+{% block style %}
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #3498db, #2980b9, #27ae60, #f39c12, #e74c3c, #9b59b6);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.login-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.login-title {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.login-subtitle {
+    color: #7f8c8d;
+    font-size: 1rem;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 15px 50px 15px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 1rem;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: #3498db;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-input.error {
+    border-color: #e74c3c;
+    background: #ffeaea;
+}
+
+.input-icon {
+    position: absolute;
+    right: 15px;
+    top: 38px;
+    font-size: 1.2rem;
+    color: #7f8c8d;
+    transition: color 0.3s ease;
+}
+
+.form-input:focus ~ .input-icon {
+    color: #3498db;
+}
+
+.password-toggle {
+    cursor: pointer;
+    user-select: none;
+}
+
+.password-toggle:hover {
+    color: #2c3e50;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.login-button {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(52, 152, 219, 0.4);
+}
+
+.login-button:active {
+    transform: translateY(0);
+}
+
+.login-button:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.loading-spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    display: none;
+    animation: slideIn 0.3s ease;
+}
+
+.alert.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert.show {
+    display: block;
+}
+
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #2c3e50;
+    font-size: 0.9rem;
+}
+
+.checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: #3498db;
+}
+
+.forgot-password {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+    color: #2980b9;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #7f8c8d;
+    font-size: 0.85rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 30px 25px;
+        margin: 10px;
+    }
+
+    .login-title {
+        font-size: 1.6rem;
+    }
+
+    .login-icon {
+        font-size: 3rem;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .login-container {
+        background: rgba(45, 52, 54, 0.95);
+        color: #ddd;
+    }
+
+    .login-title {
+        color: #ecf0f1;
+    }
+
+    .form-input {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #ecf0f1;
+    }
+
+    .form-input:focus {
+        background: rgba(255, 255, 255, 0.15);
+    }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="login-container">
+    <div class="login-header">
+        <div class="login-icon">🏫</div>
+        <h1 class="login-title">Control de Pagos</h1>
+        <p class="login-subtitle">Sistema de Gestión Escolar</p>
+    </div>
+
+    <div id="alertContainer" class="alert">
+        <span id="alertMessage"></span>
+    </div>
+
+    <form class="login-form" id="loginForm">
+        <div class="form-group">
+            <label for="nombre" class="form-label">Nombre de Usuario</label>
+            <input type="text" id="nombre" name="nombre" class="form-input" placeholder="Ingrese su nombre de usuario" required>
+            <span class="input-icon">👤</span>
+            <div class="error-message" id="nombreError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="email" class="form-label">Correo Electrónico</label>
+            <input type="email" id="email" name="email" class="form-input" placeholder="ejemplo@correo.com" required>
+            <span class="input-icon">📧</span>
+            <div class="error-message" id="emailError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="password" class="form-label">Contraseña</label>
+            <input type="password" id="password" name="password" class="form-input" placeholder="Ingrese su contraseña" required>
+            <span class="input-icon password-toggle" onclick="togglePassword()">👁️</span>
+            <div class="error-message" id="passwordError"></div>
+        </div>
+
+        <div class="remember-forgot">
+            <label class="remember-me">
+                <input type="checkbox" class="checkbox" id="remember">
+                Recordarme
+            </label>
+            <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button type="submit" class="login-button" id="loginButton">
+            <span class="loading-spinner" id="loadingSpinner"></span>
+            <span id="buttonText">Iniciar Sesión</span>
+        </button>
+    </form>
+
+    <div class="footer">
+        <p>&copy; 2024 Sistema de Control de Pagos Escolares</p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Referencias a elementos del DOM
+    const loginForm = document.getElementById('loginForm');
+    const loginButton = document.getElementById('loginButton');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const buttonText = document.getElementById('buttonText');
+    const alertContainer = document.getElementById('alertContainer');
+    const alertMessage = document.getElementById('alertMessage');
+
+    // Toggle password visibility
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.querySelector('.password-toggle');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.textContent = '🙈';
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.textContent = '👁️';
+        }
+    }
+
+    // Mostrar alerta
+    function showAlert(message, type = 'error') {
+        alertMessage.textContent = message;
+        alertContainer.className = `alert ${type} show`;
+        
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            hideAlert();
+        }, 5000);
+    }
+
+    // Ocultar alerta
+    function hideAlert() {
+        alertContainer.classList.remove('show');
+    }
+
+    // Validar campo
+    function validateField(fieldId, value, errorMessage) {
+        const field = document.getElementById(fieldId);
+        const errorDiv = document.getElementById(fieldId + 'Error');
+        
+        if (!value.trim()) {
+            field.classList.add('error');
+            errorDiv.textContent = errorMessage;
+            errorDiv.classList.add('show');
+            return false;
+        } else {
+            field.classList.remove('error');
+            errorDiv.classList.remove('show');
+            return true;
+        }
+    }
+
+    // Validar email
+    function validateEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    // Limpiar errores
+    function clearErrors() {
+        const errorMessages = document.querySelectorAll('.error-message');
+        const errorInputs = document.querySelectorAll('.form-input.error');
+        
+        errorMessages.forEach(error => error.classList.remove('show'));
+        errorInputs.forEach(input => input.classList.remove('error'));
+    }
+
+    // Estado de carga
+    function setLoading(loading) {
+        if (loading) {
+            loginButton.disabled = true;
+            loadingSpinner.style.display = 'inline-block';
+            buttonText.textContent = 'Iniciando Sesión...';
+        } else {
+            loginButton.disabled = false;
+            loadingSpinner.style.display = 'none';
+            buttonText.textContent = 'Iniciar Sesión';
+        }
+    }
+
+    // Manejar envío del formulario
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Ocultar alertas previas
+        hideAlert();
+        clearErrors();
+        
+        // Obtener valores
+        const nombre = document.getElementById('nombre').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        // Validaciones
+        let isValid = true;
+        
+        if (!validateField('nombre', nombre, 'El nombre de usuario es requerido')) {
+            isValid = false;
+        }
+        
+        if (!validateField('email', email, 'El correo electrónico es requerido')) {
+            isValid = false;
+        } else if (!validateEmail(email)) {
+            const emailField = document.getElementById('email');
+            const emailError = document.getElementById('emailError');
+            emailField.classList.add('error');
+            emailError.textContent = 'Por favor ingrese un correo electrónico válido';
+            emailError.classList.add('show');
+            isValid = false;
+        }
+        
+        if (!validateField('password', password, 'La contraseña es requerida')) {
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            return;
+        }
+        
+        // Iniciar estado de carga
+        setLoading(true);
+        
+        try {
+            // Preparar datos para envío
+            const formData = new FormData();
+            formData.append('action', 'login');
+            formData.append('nombre', nombre);
+            formData.append('email', email);
+            formData.append('password', password);
+            
+            console.log('Enviando datos:', {
+                action: 'login',
+                nombre: nombre,
+                email: email,
+                password: '***'
+            });
+            
+            // CORRECCIÓN: Ruta correcta del controlador web
+            const response = await fetch('/app/controllers/web/authController.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            console.log('Response status:', response.status);
+            
+            // Obtener respuesta como texto primero
+            const responseText = await response.text();
+            console.log('Raw response:', responseText);
+            
+            // Intentar parsear como JSON
+            let data;
+            try {
+                data = JSON.parse(responseText);
+                console.log('Parsed data:', data);
+            } catch (parseError) {
+                console.error('Error parsing JSON:', parseError);
+                showAlert('Error: Respuesta inválida del servidor. Revisa la consola para más detalles.', 'error');
+                return;
+            }
+            
+            if (data.success) {
+                showAlert('¡Login exitoso! Redirigiendo...', 'success');
+                
+                // Guardar remember token si está marcado
+                if (document.getElementById('remember').checked) {
+                    localStorage.setItem('rememberUser', JSON.stringify({
+                        nombre: nombre,
+                        email: email
+                    }));
+                }
+                
+                // Redireccionar al dashboard
+                setTimeout(() => {
+                    window.location.href = '/dashboard.php';
+                }, 1500);
+                
+            } else {
+                showAlert(data.message || 'Error al iniciar sesión', 'error');
+            }
+            
+        } catch (error) {
+            console.error('Error completo:', error);
+            showAlert('Error de conexión. Por favor intente nuevamente.', 'error');
+        } finally {
+            setLoading(false);
+        }
+    });
+
+    // Cargar datos recordados al cargar la página
+    window.addEventListener('load', function() {
+        const rememberedUser = localStorage.getItem('rememberUser');
+        if (rememberedUser) {
+            try {
+                const userData = JSON.parse(rememberedUser);
+                document.getElementById('nombre').value = userData.nombre || '';
+                document.getElementById('email').value = userData.email || '';
+                document.getElementById('remember').checked = true;
+            } catch (error) {
+                console.error('Error loading remembered user:', error);
+            }
+        }
+    });
+
+    // Limpiar errores al escribir
+    document.querySelectorAll('.form-input').forEach(input => {
+        input.addEventListener('input', function() {
+            if (this.classList.contains('error')) {
+                this.classList.remove('error');
+                const errorDiv = document.getElementById(this.id + 'Error');
+                if (errorDiv) {
+                    errorDiv.classList.remove('show');
+                }
+            }
+            hideAlert();
+        });
+    });
+
+    // Manejar forgot password
+    document.querySelector('.forgot-password').addEventListener('click', function(e) {
+        e.preventDefault();
+        showAlert('Funcionalidad de recuperación de contraseña en desarrollo.', 'error');
+    });
+</script>
+{% endblock %}

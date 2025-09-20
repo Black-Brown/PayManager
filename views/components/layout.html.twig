@@ -1,0 +1,91 @@
+{% block styles %}
+
+<link href="assets/styles.css" rel="stylesheet">
+
+{% endblock %}
+
+{% block body %}
+
+<!-- Overlay -->
+<div class="overlay" id="overlay"></div>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2>🏫 Sistema Escolar</h2>
+        <p>Control de Pagos</p>
+    </div>
+
+    <div class="sidebar-menu">
+        <div class="menu-section">
+            <div class="menu-section-title">Principal</div>
+            <a href="#" class="menu-item active icon icon-dashboard">
+                Dashboard
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-section-title">Pagos</div>
+            <a href="#" class="menu-item icon icon-payment">
+                Registrar Pago
+            </a>
+            <a href="#" class="menu-item icon icon-search">
+                Consultar Pagos
+            </a>
+            <a href="#" class="menu-item icon icon-payment">
+                Conceptos de Pago
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-section-title">Gestión</div>
+            <a href="#" class="menu-item icon icon-student">
+                Alumnos
+            </a>
+            <a href="#" class="menu-item icon icon-activity">
+                Actividades Extra
+            </a>
+            <a href="#" class="menu-item icon icon-camp">
+                Campamentos
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-section-title">Sistema</div>
+            <a href="#" class="menu-item icon icon-report">
+                Reportes
+            </a>
+            <a href="#" class="menu-item icon icon-config">
+                Configuración
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main-content" id="mainContent">
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <h1 class="header-title">Dashboard Principal</h1>
+        </div>
+        <div class="header-right">
+            <div class="user-info">
+                <div class="user-name">Admin Usuario</div>
+                <div class="user-role">Administrador</div>
+            </div>
+        </div>
+    </header>
+
+    {% block content %}{% endblock %}
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<scripts src="assets/home.js"></scripts>
+
+{% endblock %}
+
