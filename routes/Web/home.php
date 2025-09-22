@@ -3,5 +3,5 @@
 use App\Controllers\Web\HomeController;
 
 return [
-  ['GET', '/', [HomeController::class, 'home']],
+  ['GET', '/', [HomeController::class, 'index']],
 ];
