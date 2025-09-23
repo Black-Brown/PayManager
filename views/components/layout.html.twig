@@ -41,7 +41,9 @@
         <div class="menu-section">
             <div class="menu-section-title">Sistema</div>
             <a href="#" class="menu-item icon icon-report">Reportes</a>
-            {# <a href="#" class="menu-item icon icon-config">Configuración</a> #}
+            {% if auth_user() and auth_user().role_id == 1 %}
+                <a href="#" class="menu-item icon icon-config">Configuración</a>
+            {% endif %}
             <a href="/logout" class="menu-item btn btn-danger text-center" style="display: block; text-align: center;"> <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
         </div>
     </div>
@@ -65,7 +67,13 @@
                 <div class="user-info text-right">
                     <div class="user-name font-semibold text-sm text-gray-800">{{ auth_user().name }}</div>
                     <div class="user-role text-xs text-gray-500">
-                        {{ auth_user().role_id == 3 ? 'Admin' : 'Usuario' }}
+                        {% if auth_user().role_id == 1 %}
+                            Admin
+                        {% elseif auth_user().role_id == 2 %}
+                            Usuario
+                        {% else %}
+                            Desconocido
+                        {% endif %}
                     </div>
                 </div>
             {% endif %}
