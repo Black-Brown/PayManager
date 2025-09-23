@@ -6,7 +6,6 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -243,6 +242,115 @@ body {
     font-size: 0.85rem;
 }
 
+/* ==== REGISTER PAGE ==== */
+.register-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    height: auto;
+    min-height: 600px;
+    max-width: 700px;
+    padding: 45px;
+    position: relative;
+    overflow-y: auto;
+}
+
+.register-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #27ae60, #f39c12, #e74c3c, #9b59b6, #3498db);
+}
+
+.register-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.register-icon {
+    font-size: 4rem;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.register-title {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.register-subtitle {
+    color: #7f8c8d;
+    font-size: 1rem;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 22px;
+}
+
+.register-button {
+  flex: 1 1 100%;
+}
+
+.form-group {
+  flex: 1 1 45%; 
+  display: flex;
+  flex-direction: column;
+}
+
+
+.register-button {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.register-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(46, 204, 113, 0.4);
+}
+
+.register-button:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 480px) {
+    .register-container {
+        padding: 30px 25px;
+        margin: 10px;
+    }
+
+    .register-title {
+        font-size: 1.6rem;
+    }
+
+    .register-icon {
+        font-size: 3rem;
+    }
+}
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -270,27 +378,5 @@ body {
 
     .login-icon {
         font-size: 3rem;
-    }
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-    .login-container {
-        background: rgba(45, 52, 54, 0.95);
-        color: #ddd;
-    }
-
-    .login-title {
-        color: #ecf0f1;
-    }
-
-    .form-input {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.2);
-        color: #ecf0f1;
-    }
-
-    .form-input:focus {
-        background: rgba(255, 255, 255, 0.15);
     }
 }

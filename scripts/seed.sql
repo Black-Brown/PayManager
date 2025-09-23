@@ -1,27 +1,27 @@
--- Insertar roles
-INSERT INTO roles (nombre, descripcion) VALUES
-('admin', 'Administrador del sistema'),
-('usuario', 'Usuario estándar');
+-- Insert roles
+INSERT INTO roles (name, description) VALUES
+('admin', 'System administrator'),
+('user', 'Standard user');
 
--- Insertar grados académicos
-INSERT INTO grados (nombre, nivel, orden) VALUES
-('Inicial A', 'Inicial', 1),
-('Primaria 1', 'Primaria', 2);
+-- Insert academic grades
+INSERT INTO grades (name, level, grade_order) VALUES
+('Initial A', 'Initial', 1),
+('Primary 1', 'Primary', 2);
 
--- Insertar usuarios
-INSERT INTO usuarios (nombre, email, password, rol_id, activo, remember_token) VALUES
-('Juan Pérez', 'juan@example.com', '$2y$10$EjemploHashJuan', 1, 1, NULL),
-('Ana Gómez', 'ana@example.com', '$2y$10$EjemploHashAna', 2, 1, NULL);
+-- Insert users
+INSERT INTO users (name, email, photo_url, password, role_id, active, remember_token) VALUES
+('John Perez', 'john@example.com', 'https://example.com/photos/john.jpg', '$2y$10$ExampleHashJohn', 1, 1, NULL),
+('Anna Gomez', 'anna@example.com', 'https://example.com/photos/anna.jpg', '$2y$10$ExampleHashAnna', 2, 1, NULL),
 
--- Insertar alumnos
-INSERT INTO alumnos (id_ministerio, nombre, apellido, fecha_nacimiento, genero, grado_id, nombre_representante, telefono_representante, activo) VALUES
-('MIN001', 'Carlos', 'Ramírez', '2015-06-10', 'M', 1, 'Luis Ramírez', '8091234567', 1);
+-- Insert students
+INSERT INTO students (ministry_id, first_name, last_name, birth_date, gender, grade_id, guardian_name, guardian_phone, active) VALUES
+('MIN001', 'Carlos', 'Ramirez', '2015-06-10', 'M', 1, 'Luis Ramirez', '8091234567', 1);
 
--- Insertar conceptos de pago
-INSERT INTO conceptos_pago (nombre, tipo, monto, aplica_descuento, periodicidad, activo) VALUES
-('Inscripción 2025', 'Inscripción', 1500.00, 1, 'Único', 1),
-('Mensualidad Septiembre', 'Mensualidad', 1000.00, 1, 'Mensual', 1);
+-- Insert payment concepts
+INSERT INTO payment_concepts (name, type, amount, discount_applicable, frequency, active) VALUES
+('Enrollment 2025', 'Enrollment', 1500.00, 1, 'One-time', 1),
+('September Tuition', 'Tuition', 1000.00, 1, 'Monthly', 1);
 
--- Insertar pagos
-INSERT INTO pagos (alumno_id, concepto_id, monto, fecha_pago, mes_correspondiente, metodo_pago, referencia, observaciones, usuario_registro_id) VALUES
-(1, 1, 1500.00, CURDATE(), '2025-09-01', 'Efectivo', 'REC001', 'Pago completo', 1);
+-- Insert payments
+INSERT INTO payments (student_id, concept_id, amount, payment_date, corresponding_month, payment_method, reference, notes, registered_by_user_id) VALUES
+(1, 1, 1500.00, CURDATE(), '2025-09-01', 'Cash', 'REC001', 'Full payment', 1);
