@@ -1,0 +1,144 @@
+{% extends "components/layout.html.twig" %}
+
+{% block styles %}
+  {{ parent() }}
+  <link href="assets/home.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+  <!-- Dashboard Content -->
+  <main class="dashboard">
+
+    {# Si es ADMIN muestra todo el dashboard #}
+    {% if auth_user() and auth_user().role_id == 1 %}
+
+      <!-- Quick Stats -->
+      <section class="stats-grid">
+        <div class="stat-card mensualidades">
+          <div class="stat-header"><div class="stat-icon">📚</div></div>
+          <div class="stat-number">1,248</div>
+          <div class="stat-label">Mensualidades Este Mes</div>
+        </div>
+
+        <div class="stat-card inscripciones">
+          <div class="stat-header"><div class="stat-icon">✏️</div></div>
+          <div class="stat-number">89</div>
+          <div class="stat-label">Inscripciones/Reinscripciones</div>
+        </div>
+
+        <div class="stat-card extraescolares">
+          <div class="stat-header"><div class="stat-icon">🏃</div></div>
+          <div class="stat-number">156</div>
+          <div class="stat-label">Actividades Extraescolares</div>
+        </div>
+
+        <div class="stat-card campamentos">
+          <div class="stat-header"><div class="stat-icon">🏕️</div></div>
+          <div class="stat-number">23</div>
+          <div class="stat-label">Inscripciones Campamento</div>
+        </div>
+
+        <div class="stat-card pendientes">
+          <div class="stat-header"><div class="stat-icon">⏰</div></div>
+          <div class="stat-number">47</div>
+          <div class="stat-label">Pagos Pendientes</div>
+        </div>
+
+        <div class="stat-card total-mes">
+          <div class="stat-header"><div class="stat-icon">💰</div></div>
+          <div class="stat-number">$125,890</div>
+          <div class="stat-label">Total Recaudado (Mes)</div>
+        </div>
+      </section>
+
+      <!-- Quick Actions -->
+      <section class="quick-actions">
+        <h2>Acciones Rápidas</h2>
+        <div class="actions-grid">
+          <button class="action-btn registro" onclick="navigateTo('registro-pago')">
+            <i>💰</i><span>Registrar Pago</span>
+          </button>
+          <button class="action-btn consulta" onclick="navigateTo('consultar-pagos')">
+            <i>🔍</i><span>Consultar Pagos</span>
+          </button>
+          <button class="action-btn alumnos" onclick="navigateTo('gestionar-alumnos')">
+            <i>👥</i><span>Gestionar Alumnos</span>
+          </button>
+          <button class="action-btn reportes" onclick="navigateTo('generar-reportes')">
+            <i>📊</i><span>Generar Reportes</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Recent Activity -->
+      <section class="recent-activity">
+        <h2>Actividad Reciente</h2>
+        <ul class="activity-list">
+          <li class="activity-item">
+            <div class="activity-info">
+              <div class="activity-title">María González - 3ro Primaria</div>
+              <div class="activity-details">Mensualidad Octubre 2024 • Transferencia #TR12345</div>
+            </div>
+            <div class="activity-amount">$2,500</div>
+            <div class="activity-status status-pagado">Pagado</div>
+          </li>
+          <li class="activity-item">
+            <div class="activity-info">
+              <div class="activity-title">Carlos Pérez - 1ro Primaria</div>
+              <div class="activity-details">Actividad Extra: Fútbol • Octubre 2024</div>
+            </div>
+            <div class="activity-amount">$800</div>
+            <div class="activity-status status-pagado">Pagado</div>
+          </li>
+          <li class="activity-item">
+            <div class="activity-info">
+              <div class="activity-title">Ana Rodríguez - Inicial</div>
+              <div class="activity-details">Reinscripción 2024-2025 • Efectivo</div>
+            </div>
+            <div class="activity-amount">$5,000</div>
+            <div class="activity-status status-pendiente">Pendiente</div>
+          </li>
+          <li class="activity-item">
+            <div class="activity-info">
+              <div class="activity-title">Luis Martínez - 2do Primaria</div>
+              <div class="activity-details">Campamento de Verano 2024</div>
+            </div>
+            <div class="activity-amount">$3,200</div>
+            <div class="activity-status status-pagado">Pagado</div>
+          </li>
+          <li class="activity-item">
+            <div class="activity-info">
+              <div class="activity-title">Sofia López - 1ro Primaria</div>
+              <div class="activity-details">Mensualidad Octubre 2024 • Pendiente</div>
+            </div>
+            <div class="activity-amount">$2,500</div>
+            <div class="activity-status status-pendiente">Pendiente</div>
+          </li>
+        </ul>
+      </section>
+
+    {% elseif auth_user() and auth_user().role_id == 2 %}
+
+      {# Si es USUARIO normal solo ve las Quick Actions #}
+      <section class="quick-actions">
+        <h2>Acciones Rápidas</h2>
+        <div class="actions-grid">
+          <button class="action-btn registro" onclick="navigateTo('registro-pago')">
+            <i>💰</i><span>Registrar Pago</span>
+          </button>
+          <button class="action-btn consulta" onclick="navigateTo('consultar-pagos')">
+            <i>🔍</i><span>Consultar Pagos</span>
+          </button>
+          <button class="action-btn alumnos" onclick="navigateTo('gestionar-alumnos')">
+            <i>👥</i><span>Gestionar Alumnos</span>
+          </button>
+          <button class="action-btn reportes" onclick="navigateTo('generar-reportes')">
+            <i>📊</i><span>Generar Reportes</span>
+          </button>
+        </div>
+      </section>
+
+    {% endif %}
+
+  </main>
+{% endblock %}

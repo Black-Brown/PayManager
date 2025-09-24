@@ -1,38 +1,38 @@
 <?php
 
-require('../config/database.php');
+use JosueIsOffline\Framework\Database\DB;
 
-class SQLExecutor
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// cargar configuración
+$config = json_decode(file_get_contents(__DIR__ . '/../config/database.json'), true);
+DB::configure($config);
+
+// funcion para ejecutar multiple sentencias de un archivo SQL
+function ejecutarArchivoSQL(string $ruta): void
 {
-    private PDO $conn;
-
-    public function __construct()
-    {
-        $db = new Database();
-        $this->conn = $db->getDB();
+    if (!file_exists($ruta)) {
+        exit("No se encontro el archivo: $ruta\n");
     }
 
-    public function ejecutarArchivoSQL(string $ruta): void
-    {
-        if (!file_exists($ruta)) {
-            fwrite(STDERR, "❌ Archivo no encontrado: $ruta\n");
-            exit(1);
-        }
+    $sql = file_get_contents($ruta);
+    $sentencias = array_filter(array_map('trim', preg_split('/;\s*\n/', $sql)));
 
-        $sql = file_get_contents($ruta);
-        $sentencias = array_filter(array_map('trim', preg_split('/;\s*\n/', $sql)));
+    foreach ($sentencias as $s) {
+        try {
+            DB::raw($s);
+        } catch (Throwable $e) {
+            echo "Error en:\n $s \n { " . $e->getMessage() . " }\n\n";
 
-        foreach ($sentencias as $query) {
-            try {
-                $this->conn->exec($query);
-                echo "✅ Ejecutado:\n$query\n\n";
-            } catch (Throwable $e) {
-                echo "⚠️ Error en:\n$query\n→ {$e->getMessage()}\n\n";
-            }
         }
     }
 }
 
-// Ejemplo de uso
-$executor = new SQLExecutor();
-$executor->ejecutarArchivoSQL(__DIR__ . '/../scripts/paymanager_db.sql');
+// Ejecutar estructura y seed
+echo "Ejecutando estructura...\n";
+ejecutarArchivoSQL(__DIR__ . '/paymanager_db.sql');
+
+echo "Ejecutando seed...\n";
+ejecutarArchivoSQL(__DIR__ . '/seed.sql');
+
+echo "Base de datos inicializada correctamente.\n";

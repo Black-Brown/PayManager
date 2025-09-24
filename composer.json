@@ -1,0 +1,21 @@
+{
+    "name": "jhei/pay-manager",
+    "description": "Sistema de gestión de pagos con autenticación y vistas Twig",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/" 
+        }
+    },
+    "authors": [
+        {
+            "name": "Black-Brown",
+            "email": "jheinelbrown@gmail.com"
+        }
+    ],
+    "require": {
+        "twig/twig": "^3.21",
+        "arkham-dev/framework": "^1.5"
+    }
+}

@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block styles %}
+<link href="assets/home.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+<!-- Overlay -->
+<div class="overlay" id="overlay"></div>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2>🏫 Sistema Escolar</h2>
+        <p>Control de Pagos</p>
+    </div>
+
+    <div class="sidebar-menu">
+        <div class="menu-section">
+            <div class="menu-section-title">Principal</div>
+            <a href="#" class="menu-item active icon icon-dashboard">
+                Dashboard
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-section-title">Pagos</div>
+            <a href="#" class="menu-item icon icon-payment">Registrar Pago</a>
+            <a href="#" class="menu-item icon icon-search">Consultar Pagos</a>
+            <a href="#" class="menu-item icon icon-payment">Conceptos de Pago</a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-section-title">Gestión</div>
+            <a href="#" class="menu-item icon icon-student">Alumnos</a>
+            <a href="#" class="menu-item icon icon-activity">Actividades Extra</a>
+            <a href="#" class="menu-item icon icon-camp">Campamentos</a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-section-title">Sistema</div>
+            <a href="#" class="menu-item icon icon-report">Reportes</a>
+            {% if auth_user() and auth_user().role_id == 1 %}
+                <a href="#" class="menu-item icon icon-config">Configuración</a>
+            {% endif %}
+            <a href="/logout" class="menu-item btn btn-danger text-center" style="display: block; text-align: center;"> <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main-content" id="mainContent">
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <h1 class="header-title">Dashboard Principal</h1>
+        </div>
+        <div class="header-right minimal-premium flex items-center gap-3">
+            {% if auth_user() %}
+                <img 
+                    src="https://ui-avatars.com/api/?name={{ auth_user().name | url_encode }}&background=0D8ABC&color=fff&rounded=true&size=48" 
+                    alt="Avatar de {{ auth_user().name }}" 
+                    class="rounded-full shadow-md avatar"
+                >
+                <div class="user-info text-right">
+                    <div class="user-name font-semibold text-sm text-gray-800">{{ auth_user().name }}</div>
+                    <div class="user-role text-xs text-gray-500">
+                        {% if auth_user().role_id == 1 %}
+                            Admin
+                        {% elseif auth_user().role_id == 2 %}
+                            Usuario
+                        {% else %}
+                            Desconocido
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+
+    {% block content %}{% endblock %}
+
+</div>
+
+{% endblock %}
