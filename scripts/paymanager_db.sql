@@ -14,7 +14,7 @@ CREATE TABLE roles (
 CREATE TABLE grades (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE,
-    level VARCHAR(20) NOT NULL,
+    level ENUM('Preescolar', 'Primaria', 'Secundaria', 'Bachillerato') NOT NULL,
     grade_order INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

@@ -9,6 +9,9 @@ class HomeController extends AbstractController
 {
   public function index(): Response
   {
-    return $this->render('index.html.twig');
+    return $this->render('index.html.twig', [
+      'page_title' => 'Dashboard Principal',
+      'active_menu' => 'index'
+    ]);
   }
 }
