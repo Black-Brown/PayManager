@@ -68,7 +68,7 @@ CREATE TABLE students (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     birth_date DATE,
-    gender VARCHAR(1),
+    gender ENUM('Masculino', 'Femenino', 'Otro'),
     grade_id INT NOT NULL,
     guardian_name VARCHAR(100),
     guardian_phone VARCHAR(20),

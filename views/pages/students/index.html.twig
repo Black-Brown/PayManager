@@ -1,0 +1,90 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-graduation-cap me-2"></i>Lista de estudiantes
+            </h5>
+            <a href="/students/create" class="btn btn-light text-primary">
+                <i class="fas fa-plus me-2"></i>Agregar Estudiante
+            </a>
+        </div>
+        <div class="card-body p-0">
+            {% if students %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="text-center" style="width: 60px;">#</th>
+                                <th scope="col">Ministerio ID</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Apellido</th>
+                                <th scope="col">Fecha de Nacimiento</th>
+                                <th scope="col">Género</th>
+                                <th scope="col">Grado</th>
+                                <th scope="col">Nombre del Tutor</th>
+                                <th scope="col">Teléfono del Tutor</th>
+                                <th scope="col" class="text-center" style="width: 200px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            <tr>
+                                <td class="text-center fw-bold text-muted">{{ loop.index }}</td>
+                                <td class="fw-semibold">{{ student.ministry_id }}</td>
+                                <td>{{ student.first_name }}</td>
+                                <td>{{ student.last_name }}</td>
+                                <td>{{ student.birth_date|date('d/m/Y') }}</td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ student.gender }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">
+                                        {{ student.grade_name is defined ? student.grade_name : student.grade_id }}
+                                    </span>
+                                </td>
+                                <td>{{ student.guardian_name }}</td>
+                                <td>{{ student.guardian_phone }}</td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group" aria-label="Acciones">
+                                        <!-- Editar -->
+                                        <a href="/students/{{ student.id }}/edit" 
+                                             class="btn btn-sm btn-outline-primary" 
+                                             title="Editar estudiante">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <!-- Eliminar -->
+                                        <a href="/students/{{ student.id }}/delete" 
+                                             class="btn btn-sm btn-outline-danger" 
+                                             title="Eliminar estudiante"
+                                             onclick="return confirm('¿Estás seguro de que deseas eliminar este estudiante?');">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-3"><i class="fas fa-graduation-cap fa-3x text-muted"></i></div>
+                    <h5 class="text-muted">No se encontraron estudiantes</h5>
+                    <p class="text-muted mb-4">Comienza agregando el primer estudiante al sistema</p>
+                    <a href="/students/create" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Agregar Primer Estudiante
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        {% if students %}
+        <div class="card-footer bg-light text-muted">
+            <small><i class="fas fa-info-circle me-1"></i>Total de estudiantes: {{ students|length }}</small>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
