@@ -6,7 +6,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #d9e9f8;
     min-height: 100vh;
     display: flex;
     color: #333;
@@ -501,6 +501,8 @@ body {
 .icon-dashboard::before { content: "📊"; }
 .icon-payment::before { content: "💰"; }
 .icon-student::before { content: "👥"; }
+.icon-user::before { content: "👤"; }
+.icon-grade::before { content: "🎓"; }
 .icon-activity::before { content: "🏃"; }
 .icon-camp::before { content: "🏕️"; }
 .icon-report::before { content: "📈"; }

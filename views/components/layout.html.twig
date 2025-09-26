@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block styles %}
-<link href="assets/home.css" rel="stylesheet">
+    <link href="/assets/style.css" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
@@ -19,7 +19,7 @@
     <div class="sidebar-menu">
         <div class="menu-section">
             <div class="menu-section-title">Principal</div>
-            <a href="#" class="menu-item active icon icon-dashboard">
+            <a href="/" class="menu-item icon icon-dashboard {% if active_menu == 'index' %}active{% endif %}">
                 Dashboard
             </a>
         </div>
@@ -32,18 +32,24 @@
         </div>
 
         <div class="menu-section">
+            {% if auth_user() and auth_user().role_id == 1 %}
             <div class="menu-section-title">Gestión</div>
             <a href="#" class="menu-item icon icon-student">Alumnos</a>
+            <a href="/grades" class="menu-item icon icon-grade {% if active_menu == 'grades' %}active{% endif %}">Grados</a>
             <a href="#" class="menu-item icon icon-activity">Actividades Extra</a>
             <a href="#" class="menu-item icon icon-camp">Campamentos</a>
+            <a href="#" class="menu-item icon icon-user">Usuarios</a>
+            {% endif %}
         </div>
 
         <div class="menu-section">
+            {% if auth_user() and auth_user().role_id == 1 %}
             <div class="menu-section-title">Sistema</div>
             <a href="#" class="menu-item icon icon-report">Reportes</a>
-            {% if auth_user() and auth_user().role_id == 1 %}
-                <a href="#" class="menu-item icon icon-config">Configuración</a>
+            <a href="#" class="menu-item icon icon-config">Configuración</a>
             {% endif %}
+        </div>
+        <div class="menu-section">
             <a href="/logout" class="menu-item btn btn-danger text-center" style="display: block; text-align: center;"> <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
         </div>
     </div>
@@ -55,7 +61,7 @@
     <!-- Header -->
     <header class="header">
         <div class="header-left">
-            <h1 class="header-title">Dashboard Principal</h1>
+            <h1 class="header-title">{{ page_title|default('Dashboard Principal') }}</h1>
         </div>
         <div class="header-right minimal-premium flex items-center gap-3">
             {% if auth_user() %}
