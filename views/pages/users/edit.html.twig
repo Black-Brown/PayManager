@@ -1,0 +1,119 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Editar Usuario{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="card shadow-sm mt-4 mb-4">
+    <div class="card-header bg-warning text-dark py-3">
+      <h5 class="card-title mb-0">
+        <i class="fas fa-user-edit me-2"></i>Editar Usuario
+      </h5>
+    </div>
+    <div class="card-body">
+      <form action="/users/{{ user.id }}/update" method="POST" id="userForm" novalidate>
+        <input type="hidden" name="id" value="{{ user.id }}">
+        <div class="row">
+          {% if error %}
+            <div class="alert alert-danger">
+              <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+            </div>
+          {% endif %}
+
+          <!-- Nombre -->
+          <div class="col-md-6 mb-4">
+            <label for="name" class="form-label fw-semibold">Nombre completo <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="name" name="name" required maxlength="100" value="{{ user.name }}">
+          </div>
+
+          <!-- Correo -->
+          <div class="col-md-6 mb-4">
+            <label for="email" class="form-label fw-semibold">Correo electrónico <span class="text-danger">*</span></label>
+            <input type="email" class="form-control" id="email" name="email" required maxlength="100" value="{{ user.email }}">
+          </div>
+
+          <!-- Contraseña -->
+        <div class="col-md-6 mb-4">
+        <label for="password" class="form-label fw-semibold">Nueva contraseña</label>
+        <div class="position-relative">
+            <input type="password" class="form-control pe-5" id="password" name="password" placeholder="Dejar en blanco para mantener la actual">
+            <span class="position-absolute top-50 end-0 translate-middle-y me-3 text-muted" style="cursor: pointer;" onclick="togglePassword('password', 'toggleIcon1')">
+            <i class="fa-solid fa-eye-slash" id="toggleIcon1"></i>
+            </span>
+        </div>
+        </div>
+
+        <!-- Confirmar contraseña -->
+        <div class="col-md-6 mb-4">
+        <label for="password_confirm" class="form-label fw-semibold">Confirmar contraseña</label>
+        <div class="position-relative">
+            <input type="password" class="form-control pe-5" id="password_confirm" name="password_confirm">
+            <span class="position-absolute top-50 end-0 translate-middle-y me-3 text-muted" style="cursor: pointer;" onclick="togglePassword('password_confirm', 'toggleIcon2')">
+            <i class="fa-solid fa-eye-slash" id="toggleIcon2"></i>
+            </span>
+        </div>
+        </div>
+
+
+          <!-- Rol -->
+          <div class="col-md-6 mb-4">
+            <label for="role_id" class="form-label fw-semibold">Rol <span class="text-danger">*</span></label>
+            <select class="form-control" id="role_id" name="role_id" required>
+              <option value="">Seleccione un rol</option>
+              {% for role in roles %}
+              <option value="{{ role.id }}" {% if role.id == user.role_id %}selected{% endif %}>{{ role.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Estado -->
+          <div class="col-md-6 mb-4">
+            <label for="active" class="form-label fw-semibold">Activo</label>
+            <select class="form-control" id="active" name="active">
+              <option value="">Seleccione</option>
+              <option value="1" {% if user.active == 1 %}selected{% endif %}>Sí</option>
+              <option value="0" {% if user.active == 0 %}selected{% endif %}>No</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="row mt-4">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center border-top pt-3">
+              <div class="text-muted small">
+                <i class="fas fa-asterisk me-1"></i>Los campos marcados con <span class="text-danger">*</span> son obligatorios
+              </div>
+              <div class="btn-group" role="group">
+                <a href="/users" class="btn btn-outline-secondary">
+                  <i class="fas fa-arrow-left me-2"></i>Cancelar
+                </a>
+                <button type="submit" class="btn btn-warning">
+                  <i class="fas fa-save me-2"></i>Actualizar Usuario
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function togglePassword(inputId, iconId) {
+  const input = document.getElementById(inputId);
+  const icon = document.getElementById(iconId);
+
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.classList.remove('fa-eye-slash');
+    icon.classList.add('fa-eye');
+  } else {
+    input.type = 'password';
+    icon.classList.remove('fa-eye');
+    icon.classList.add('fa-eye-slash');
+  }
+}
+</script>
+{% endblock %}
