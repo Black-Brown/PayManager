@@ -1,0 +1,92 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-users me-2"></i>Lista de Usuarios
+            </h5>
+            <a href="/users/create" class="btn btn-light text-primary">
+                <i class="fas fa-user-plus me-2"></i>Agregar Usuario
+            </a>
+        </div>
+        <div class="card-body p-0">
+            {% if users %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="text-center" style="width: 60px;">#</th>
+                                <th scope="col">Foto</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Rol</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col" class="text-center" style="width: 200px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td class="text-center fw-bold text-muted">{{ loop.index }}</td>
+                                <td>
+                                    {% if user.photo_url %}
+                                        <img src="{{ user.photo_url }}" alt="Foto de {{ user.name }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                    {% else %}
+                                        <i class="fas fa-user-circle fa-2x text-muted"></i>
+                                    {% endif %}
+                                </td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    <span class="badge bg-info">
+                                        {{ user.role_name is defined ? user.role_name : user.role_id }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if user.active %}
+                                        <span class="badge bg-success">Activo</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inactivo</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group" aria-label="Acciones">
+                                        <a href="/users/{{ user.id }}/edit" 
+                                           class="btn btn-sm btn-outline-primary" 
+                                           title="Editar usuario">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="/users/{{ user.id }}/delete" 
+                                           class="btn btn-sm btn-outline-danger" 
+                                           title="Eliminar usuario"
+                                           onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-3"><i class="fas fa-users fa-3x text-muted"></i></div>
+                    <h5 class="text-muted">No se encontraron usuarios</h5>
+                    <p class="text-muted mb-4">Comienza agregando el primer usuario al sistema</p>
+                    <a href="/users/create" class="btn btn-primary">
+                        <i class="fas fa-user-plus me-2"></i>Agregar Primer Usuario
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        {% if users %}
+        <div class="card-footer bg-light text-muted">
+            <small><i class="fas fa-info-circle me-1"></i>Total de usuarios: {{ users|length }}</small>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

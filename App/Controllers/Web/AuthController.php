@@ -57,45 +57,6 @@ class AuthController extends AbstractController
         ]);
     }
 
-    public function registerForm(): Response
-    {
-        return $this->render('register.html.twig');
-    }
-
-    public function register(): Response
-    {
-        $data = $this->request->getAllPost();
-
-        if (empty($data['name']) || empty($data['email']) || empty($data['password'])) {
-            return $this->renderWithFlash('register.html.twig', [
-                'error' => 'Todos los campos son obligatorios.',
-                'old' => $data
-            ]);
-        }
-
-        $existing = User::where('email', $data['email']);
-        if (!empty($existing)) {
-            return $this->renderWithFlash('register.html.twig', [
-                'error' => 'El correo ya está registrado.',
-                'old' => $data
-            ]);
-        }
-
-        // Crear el usuario
-        $userModel = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => password_hash($data['password'], PASSWORD_DEFAULT),
-            'role_id' => 1,
-            'active' => 1
-        ]);
-
-        // Loguear automáticamente usando AuthService
-        $this->auth->login($userModel);
-
-        return $this->success([], 'Registro exitoso. Bienvenido!', 201, '/');
-    }
-
     public function logout(): Response
     {
         $this->auth->logout(); // Limpia sesión del framework
