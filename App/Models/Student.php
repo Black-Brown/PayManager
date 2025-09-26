@@ -9,6 +9,19 @@ class Student extends Model
     protected string $table = 'students';
 
     protected array $fillable = [
-        'ministry_id', 'first_name', 'last_name', 'birth_date', 'gender', 'grade_id', 'guardian_name', 'guardian_phone'
+        'ministry_id',
+        'first_name',
+        'last_name',
+        'birth_date',
+        'gender',
+        'grade_id',
+        'guardian_name',
+        'guardian_phone',
+        'active'
     ];
+
+    public function grade()
+    {
+        return $this->belongsTo(Grade::class);
+    }
 }

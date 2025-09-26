@@ -4,7 +4,7 @@
   "port": 3306,
   "database": "paymanager_db",
   "username": "root",
-  "password": "",
+  "password": "admin",
   "charset": "utf8mb4",
   "collation": "utf8mb4_unicode_ci"
 }
