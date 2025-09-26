@@ -96,6 +96,7 @@ class UserController extends AbstractController
 
         $data = $this->request->getAllPost();
 
+        // Validación básica
         if (empty($data['name']) || empty($data['email']) || empty($data['role_id'])) {
             $roles = Role::all();
             return $this->renderWithFlash('users/edit.html.twig', [
@@ -105,16 +106,30 @@ class UserController extends AbstractController
             ]);
         }
 
+        // Validar contraseña si se está cambiando
         if (!empty($data['password'])) {
+            if ($data['password'] !== ($data['password_confirm'] ?? '')) {
+                $roles = Role::all();
+                return $this->renderWithFlash('users/edit.html.twig', [
+                    'error' => 'Las contraseñas no coinciden.',
+                    'user' => $user,
+                    'roles' => $roles
+                ]);
+            }
+
             $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         } else {
             unset($data['password']);
         }
 
+        // Eliminar campos que no pertenecen a la tabla
+        unset($data['password_confirm']);
+
         $user->update($data);
 
         return $this->success([], 'Usuario actualizado correctamente.', 200, '/users');
     }
+
 
     public function destroy(int $id): Response
     {
