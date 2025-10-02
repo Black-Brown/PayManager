@@ -111,6 +111,7 @@ class UserController extends AbstractController
             unset($data['password']);
         }
 
+        unset($data['password_confirm']);
         $user->update($data);
 
         return $this->success([], 'Usuario actualizado correctamente.', 200, '/users');
