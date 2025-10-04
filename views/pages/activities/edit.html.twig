@@ -1,0 +1,139 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Editar Actividad Extraescolar{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- Form Card -->
+  <div class="card shadow-sm mt-4 mb-4">
+    <div class="card-header bg-primary text-white py-3">
+      <h5 class="card-title mb-0">
+        <i class="fas fa-plus-circle me-2"></i>Editar Nueva Actividad Extraescolar
+      </h5>
+    </div>
+    <div class="card-body">
+      <form action="/activities/{{ activity.id }}/update" method="POST" id="activityForm" novalidate>
+        <input type="hidden" name="id" value="{{ activity.id }}">
+        <div class="row">
+          <!-- Nombre de la Actividad -->
+          <div class="col-md-6 mb-4">
+            <label for="name" class="form-label fw-semibold">
+              <i class="fas fa-tag me-1 text-muted"></i>Nombre <span class="text-danger">*</span>
+            </label>
+            <input type="text" 
+                   class="form-control" 
+                   id="name" 
+                   name="name" 
+                   value="{{ activity.name }}"
+                   placeholder="Ej: Club de Robótica"
+                   required
+                   maxlength="100">
+            <div class="invalid-feedback">
+              Por favor, ingrese un nombre válido para la actividad.
+            </div>
+            <div class="form-text">
+              <i class="fas fa-info-circle me-1"></i>Máximo 100 caracteres
+            </div>
+          </div>
+
+          <!-- Costo Mensual -->
+          <div class="col-md-6 mb-4">
+            <label for="monthly_cost" class="form-label fw-semibold">
+              <i class="fas fa-dollar-sign me-1 text-muted"></i>Costo Mensual <span class="text-danger">*</span>
+            </label>
+            <input type="number" 
+                   class="form-control" 
+                   id="monthly_cost" 
+                   name="monthly_cost" 
+                   placeholder="Ej: 1200.00"
+                   value="{{ activity.monthly_cost }}"
+                   required
+                   step="0.01"
+                   min="0">
+            <div class="invalid-feedback">
+              Por favor, ingrese un costo válido.
+            </div>
+          </div>
+
+          <!-- Instructor -->
+          <div class="col-md-6 mb-4">
+            <label for="instructor" class="form-label fw-semibold">
+              <i class="fas fa-chalkboard-teacher me-1 text-muted"></i>Instructor
+            </label>
+            <input type="text" 
+                   class="form-control" 
+                   id="instructor" 
+                   name="instructor" 
+                   value="{{ activity.instructor }}"
+                   placeholder="Ej: Prof. García"
+                   maxlength="100">
+            <div class="form-text">
+              <i class="fas fa-info-circle me-1"></i>Opcional. Máximo 100 caracteres
+            </div>
+          </div>
+
+          <!-- Horario -->
+          <div class="col-md-6 mb-4">
+            <label for="schedule" class="form-label fw-semibold">
+              <i class="fas fa-clock me-1 text-muted"></i>Horario
+            </label>
+            <input type="text" 
+                   class="form-control" 
+                   id="schedule" 
+                   name="schedule"
+                   value="{{ activity.schedule }}"
+                   placeholder="Ej: Lunes y Miércoles, 3:00–5:00 PM">
+            <div class="form-text">
+              <i class="fas fa-info-circle me-1"></i>Opcional. Puedes incluir días y horas
+            </div>
+          </div>
+
+          <!-- Descripción -->
+          <div class="col-12 mb-4">
+            <label for="description" class="form-label fw-semibold">
+              <i class="fas fa-align-left me-1 text-muted"></i>Descripción
+            </label>
+            <textarea class="form-control" 
+                      id="description" 
+                      name="description" 
+                      rows="4">{{ activity.description }}</textarea>
+            <div class="form-text">
+              <i class="fas fa-info-circle me-1"></i>Opcional. Puedes incluir hasta 500 caracteres.
+            </div>
+          </div>
+
+          <!-- Estado Activo -->
+          <div class="col-md-6 mb-4">
+            <label for="active" class="form-label fw-semibold">
+              <i class="fas fa-toggle-on me-1 text-muted"></i>Activo
+            </label>
+            <select class="form-control" id="active" name="active">
+              <option value="1" {% if activity.active == 1 %}selected{% endif %}>Sí</option>
+              <option value="0" {% if activity.active == 0 %}selected{% endif %}>No</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="row mt-4">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center border-top pt-3">
+              <div class="text-muted small">
+                <i class="fas fa-asterisk me-1"></i>Los campos marcados con <span class="text-danger">*</span> son obligatorios
+              </div>
+              <div class="btn-group" role="group">
+                <a href="/activities" class="btn btn-outline-secondary">
+                  <i class="fas fa-arrow-left me-2"></i>Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save me-2"></i>Actualizar Actividad
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
