@@ -1,0 +1,134 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Crear Campamento{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- Form Card -->
+  <div class="card shadow-sm mt-4 mb-4">
+    <div class="card-header bg-primary text-white py-3">
+      <h5 class="card-title mb-0">
+        <i class="fas fa-plus-circle me-2"></i>Crear Nuevo Campamento
+      </h5>
+    </div>
+    <div class="card-body">
+      <form action="/camps" method="POST" id="campForm" novalidate>
+        <div class="row">
+          <!-- Nombre del Campamento -->
+          <div class="col-md-6 mb-4">
+            <label for="name" class="form-label fw-semibold">
+              <i class="fas fa-tag me-1 text-muted"></i>Nombre <span class="text-danger">*</span>
+            </label>
+            <input type="text" 
+                   class="form-control" 
+                   id="name" 
+                   name="name" 
+                   placeholder="Ej: Campamento de Verano"
+                   required
+                   maxlength="100">
+            <div class="invalid-feedback">
+              Por favor, ingrese un nombre válido para el campamento.
+            </div>
+            <div class="form-text">
+              <i class="fas fa-info-circle me-1"></i>Máximo 100 caracteres
+            </div>
+          </div>
+
+          <!-- Costo -->
+          <div class="col-md-6 mb-4">
+            <label for="cost" class="form-label fw-semibold">
+              <i class="fas fa-dollar-sign me-1 text-muted"></i>Costo <span class="text-danger">*</span>
+            </label>
+            <input type="number" 
+                   class="form-control" 
+                   id="cost" 
+                   name="cost" 
+                   placeholder="Ej: 1500.00"
+                   required
+                   step="0.01"
+                   min="0">
+            <div class="invalid-feedback">
+              Por favor, ingrese un costo válido.
+            </div>
+          </div>
+
+          <!-- Fecha de Inicio -->
+          <div class="col-md-6 mb-4">
+            <label for="start_date" class="form-label fw-semibold">
+              <i class="fas fa-calendar-alt me-1 text-muted"></i>Fecha de Inicio <span class="text-danger">*</span>
+            </label>
+            <input type="date" 
+                   class="form-control" 
+                   id="start_date" 
+                   name="start_date" 
+                   required>
+            <div class="invalid-feedback">
+              Por favor, seleccione una fecha de inicio.
+            </div>
+          </div>
+
+          <!-- Fecha de Fin -->
+          <div class="col-md-6 mb-4">
+            <label for="end_date" class="form-label fw-semibold">
+              <i class="fas fa-calendar-check me-1 text-muted"></i>Fecha de Fin <span class="text-danger">*</span>
+            </label>
+            <input type="date" 
+                   class="form-control" 
+                   id="end_date" 
+                   name="end_date" 
+                   required>
+            <div class="invalid-feedback">
+              Por favor, seleccione una fecha de fin.
+            </div>
+          </div>
+
+          <!-- Descripción -->
+          <div class="col-12 mb-4">
+            <label for="description" class="form-label fw-semibold">
+              <i class="fas fa-align-left me-1 text-muted"></i>Descripción
+            </label>
+            <textarea class="form-control" 
+                      id="description" 
+                      name="description" 
+                      rows="4" 
+                      placeholder="Detalles del campamento, actividades, requisitos..."></textarea>
+            <div class="form-text">
+              <i class="fas fa-info-circle me-1"></i>Opcional. Puedes incluir hasta 500 caracteres.
+            </div>
+          </div>
+
+          <!-- Estado Activo -->
+          <div class="col-md-6 mb-4">
+            <label for="active" class="form-label fw-semibold">
+              <i class="fas fa-toggle-on me-1 text-muted"></i>Activo
+            </label>
+            <select class="form-control" id="active" name="active">
+              <option value="1" selected>Sí</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="row mt-4">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center border-top pt-3">
+              <div class="text-muted small">
+                <i class="fas fa-asterisk me-1"></i>Los campos marcados con <span class="text-danger">*</span> son obligatorios
+              </div>
+              <div class="btn-group" role="group">
+                <a href="/camps" class="btn btn-outline-secondary">
+                  <i class="fas fa-arrow-left me-2"></i>Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save me-2"></i>Guardar Campamento
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

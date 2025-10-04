@@ -1,0 +1,84 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-campground me-2"></i>Lista de Campamentos
+            </h5>
+            <a href="/camps/create" class="btn btn-light text-primary">
+                <i class="fas fa-plus me-2"></i>Agregar Campamento
+            </a>
+        </div>
+        <div class="card-body p-0">
+            {% if camps %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="text-center" style="width: 60px;">#</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Descripción</th>
+                                <th scope="col">Fecha Inicio</th>
+                                <th scope="col">Fecha Fin</th>
+                                <th scope="col">Costo</th>
+                                <th scope="col">Activo</th>
+                                <th scope="col" class="text-center" style="width: 200px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for camp in camps %}
+                            <tr>
+                                <td class="text-center fw-bold text-muted">{{ loop.index }}</td>
+                                <td class="fw-semibold">{{ camp.name }}</td>
+                                <td>{{ camp.description|length > 80 ? camp.description|slice(0, 80) ~ '...' : camp.description }}</td>
+                                <td>{{ camp.start_date|date('d/m/Y') }}</td>
+                                <td>{{ camp.end_date|date('d/m/Y') }}</td>
+                                <td><span class="badge bg-warning text-dark">${{ camp.cost }}</span></td>
+                                <td>
+                                    {% if camp.active %}
+                                        <span class="badge bg-success">Sí</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">No</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group" aria-label="Acciones">
+                                        <a href="/camps/{{ camp.id }}/edit" 
+                                           class="btn btn-sm btn-outline-success" 
+                                           title="Editar campamento">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="/camps/{{ camp.id }}/delete" 
+                                           class="btn btn-sm btn-outline-danger" 
+                                           title="Eliminar campamento"
+                                           onclick="return confirm('¿Estás seguro de que deseas eliminar este campamento?');">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-3"><i class="fas fa-campground fa-3x text-muted"></i></div>
+                    <h5 class="text-muted">No se encontraron campamentos</h5>
+                    <p class="text-muted mb-4">Comienza agregando el primer campamento al sistema</p>
+                    <a href="/camps/create" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Agregar Primer Campamento
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        {% if camps %}
+        <div class="card-footer bg-light text-muted">
+            <small><i class="fas fa-info-circle me-1"></i>Total de campamentos: {{ camps|length }}</small>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
