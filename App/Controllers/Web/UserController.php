@@ -4,6 +4,7 @@ namespace App\Controllers\Web;
 
 use JosueIsOffline\Framework\Controllers\AbstractController;
 use JosueIsOffline\Framework\Http\Response;
+use JosueIsOffline\Framework\Database\DB;
 use App\Models\User;
 use App\Models\Role;
 
@@ -60,6 +61,19 @@ class UserController extends AbstractController
             ]);
         }
 
+        // Verificar si el correo ya está registrado
+        $existingUser = DB::table('users')
+        ->where('email', $data['email'])
+        ->first();
+        if ($existingUser) {
+            $roles = Role::all();
+            return $this->renderWithFlash('users/create.html.twig', [
+                'error' => 'Ya existe un usuario con ese correo electrónico. Intenta con otro.',
+                'old' => $data,
+                'roles' => $roles
+            ]);
+        }
+
         // Encriptar y limpiar
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         unset($data['password_confirm']); 
@@ -70,6 +84,7 @@ class UserController extends AbstractController
             'id' => $user->id
         ], 'Usuario creado correctamente.', 201, '/users');
     }
+
 
     public function editForm(int $id): Response
     {
