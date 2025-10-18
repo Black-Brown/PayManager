@@ -4,6 +4,7 @@ namespace App\Controllers\Web;
 
 use JosueIsOffline\Framework\Controllers\AbstractController;
 use JosueIsOffline\Framework\Http\Response;
+use JosueIsOffline\Framework\Database\DB;
 use App\Models\Student;
 use App\Models\Grade;
 
@@ -47,6 +48,17 @@ class StudentController extends AbstractController
                 'error' => 'Nombre, apellido y grado son obligatorios.',
                 'old' => $data,
                 'grades' => $grades
+            ]);
+        }
+
+        $existingStudent = DB::table('students')
+            ->where('ministry_id', $data['ministry_id'])
+            ->first();
+
+        if ($existingStudent) {
+            return $this->renderWithFlash('students/create.html.twig', [
+                'error' => 'Ya existe un estudiante con ese ID ministerial.',
+                'old' => $data
             ]);
         }
 

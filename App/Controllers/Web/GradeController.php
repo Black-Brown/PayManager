@@ -4,6 +4,7 @@ namespace App\Controllers\Web;
 
 use JosueIsOffline\Framework\Controllers\AbstractController;
 use JosueIsOffline\Framework\Http\Response;
+use JosueIsOffline\Framework\Database\DB;
 use App\Models\Grade;
 
 class GradeController extends AbstractController
@@ -34,6 +35,17 @@ class GradeController extends AbstractController
         if (empty($data['name']) || empty($data['level']) || empty($data['grade_order'])) {
             return $this->renderWithFlash('grades/create.html.twig', [
                 'error' => 'Todos los campos son obligatorios.',
+                'old' => $data
+            ]);
+        }
+
+        $existingGrade = DB::table('grades')
+            ->where('name', $data['name'])
+            ->first();
+
+        if ($existingGrade) {
+            return $this->renderWithFlash('grades/create.html.twig', [
+                'error' => 'Ya existe un grado con ese nombre.',
                 'old' => $data
             ]);
         }
