@@ -57,7 +57,7 @@ class StudentController extends AbstractController
 
         if ($existingStudent) {
             return $this->renderWithFlash('students/create.html.twig', [
-                'error' => 'Ya existe un estudiante con ese ID ministerial.',
+                'error' => 'Ya existe un estudiante con ese ID.',
                 'old' => $data
             ]);
         }
