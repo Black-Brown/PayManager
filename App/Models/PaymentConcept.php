@@ -21,4 +21,24 @@ class PaymentConcept extends Model
     {
         return $this->hasMany(Payment::class, 'concept_id');
     }
+
+    public static function enrollmentConcepts()
+    {
+        return self::where('type', 'Enrollment')->where('active', true)->get();
+    }
+
+    public static function reenrollmentConcepts()
+    {
+        return self::where('type', 'Reenrollment')->where('active', true)->get();
+    }
+
+    public static function getByType($type)
+    {
+        return self::where('type', $type)->where('active', true)->get();
+    }
+
+    public function allowsDiscount()
+    {
+        return $this->discount_applicable;
+    }
 }

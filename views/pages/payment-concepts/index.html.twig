@@ -1,0 +1,159 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-receipt me-2"></i>Conceptos de Pago
+            </h5>
+            <div class="d-flex gap-2">
+                <a href="/payment-concepts/create" class="btn btn-light text-primary">
+                    <i class="fas fa-plus me-2"></i>Nuevo Concepto
+                </a>
+            </div>
+        </div>
+        {% if error %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endif %}
+        
+        <div class="card-body p-0">
+            {% if concepts %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center" style="width: 60px;">#</th>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>Monto</th>
+                                <th>Frecuencia</th>
+                                <th>Descuentos</th>
+                                <th>Estado</th>
+                                <th class="text-center" style="width: 200px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for concept in concepts %}
+                            <tr>
+                                <td class="text-center fw-bold text-muted">{{ loop.index }}</td>
+                                <td>
+                                    <div class="fw-semibold">{{ concept.name }}</div>
+                                    {% if concept.description %}
+                                        <small class="text-muted">{{ concept.description }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if concept.type == 'Enrollment' %}
+                                        <span class="badge bg-success">Inscripción</span>
+                                    {% elseif concept.type == 'Reenrollment' %}
+                                        <span class="badge bg-info">Reinscripción</span>
+                                    {% elseif concept.type == 'Monthly' %}
+                                        <span class="badge bg-warning text-dark">Mensual</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Otro</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">${{ concept.amount|number_format(2) }}</span>
+                                </td>
+                                <td>
+                                    {% if concept.frequency == 'One-time' %}
+                                        <span class="badge bg-light text-dark">Único</span>
+                                    {% elseif concept.frequency == 'Monthly' %}
+                                        <span class="badge bg-light text-dark">Mensual</span>
+                                    {% elseif concept.frequency == 'Yearly' %}
+                                        <span class="badge bg-light text-dark">Anual</span>
+                                    {% else %}
+                                        <span class="badge bg-light text-dark">{{ concept.frequency }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if concept.discount_applicable %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>Sí
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>No
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if concept.active %}
+                                        <span class="badge bg-success">Activo</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Inactivo</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <!-- Ver detalle -->
+                                        <a href="/payment-concepts/{{ concept.id }}" 
+                                           class="btn btn-sm btn-outline-info" 
+                                           title="Ver detalle">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <!-- Editar -->
+                                        <a href="/payment-concepts/{{ concept.id }}/edit" 
+                                           class="btn btn-sm btn-outline-primary" 
+                                           title="Editar concepto">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <!-- Duplicar -->
+                                        <a href="/payment-concepts/{{ concept.id }}/duplicate" 
+                                           class="btn btn-sm btn-outline-warning" 
+                                           title="Duplicar concepto"
+                                           onclick="return confirm('¿Duplicar este concepto?');">
+                                            <i class="fas fa-copy"></i>
+                                        </a>
+                                        <!-- Activar/Desactivar -->
+                                        <a href="/payment-concepts/{{ concept.id }}/toggle-status" 
+                                           class="btn btn-sm btn-outline-secondary" 
+                                           title="{% if concept.active %}Desactivar{% else %}Activar{% endif %} concepto">
+                                            <i class="fas fa-{% if concept.active %}pause{% else %}play{% endif %}"></i>
+                                        </a>
+                                        <!-- Eliminar -->
+                                        <a href="/payment-concepts/{{ concept.id }}/delete" 
+                                           class="btn btn-sm btn-outline-danger" 
+                                           title="Eliminar concepto"
+                                           onclick="return confirm('¿Estás seguro de que deseas eliminar este concepto?');">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-3"><i class="fas fa-receipt fa-3x text-muted"></i></div>
+                    <h5 class="text-muted">No se encontraron conceptos de pago</h5>
+                    <p class="text-muted mb-4">Comienza creando el primer concepto de pago</p>
+                    <a href="/payment-concepts/create" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Crear Primer Concepto
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        {% if concepts %}
+        <div class="card-footer bg-light text-muted">
+            <div class="row">
+                <div class="col-md-6">
+                    <small><i class="fas fa-info-circle me-1"></i>Total de conceptos: {{ concepts|length }}</small>
+                </div>
+                <div class="col-md-6 text-end">
+                    {% set activeCount = concepts|filter(c => c.active)|length %}
+                    <small>Activos: {{ activeCount }} | Inactivos: {{ concepts|length - activeCount }}</small>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

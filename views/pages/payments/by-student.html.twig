@@ -5,25 +5,45 @@
     <div class="card shadow-sm mt-4">
         <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">
-                <i class="fas fa-money-check-alt me-2"></i>Lista de Pagos
+                <i class="fas fa-user me-2"></i>Pagos de {{ student.first_name }} {{ student.last_name }}
             </h5>
             <div class="d-flex gap-2">
-                <a href="/payments/report" class="btn btn-light text-primary">
-                    <i class="fas fa-chart-bar me-2"></i>Reportes
-                </a>
                 <a href="/payments/create" class="btn btn-light text-primary">
-                    <i class="fas fa-plus me-2"></i>Registrar Pago
+                    <i class="fas fa-plus me-2"></i>Nuevo Pago
+                </a>
+                <a href="/payments" class="btn btn-light text-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Volver a Pagos
                 </a>
             </div>
         </div>
         <div class="card-body p-0">
+            <!-- Información del Estudiante -->
+            <div class="bg-light p-3 border-bottom">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="mb-1">Información del Estudiante</h6>
+                        <p class="mb-0 text-muted">
+                            <strong>Nombre:</strong> {{ student.first_name }} {{ student.last_name }}<br>
+                            <strong>ID del Ministerio:</strong> {{ student.ministry_id }}<br>
+                            <strong>Teléfono del Tutor:</strong> {{ student.guardian_phone }}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="mb-1">Resumen de Pagos</h6>
+                        <p class="mb-0 text-muted">
+                            <strong>Total de Pagos:</strong> {{ payments|length }}<br>
+                            <strong>Monto Total:</strong> ${{ totalAmount|number_format(2) }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             {% if payments %}
                 <div class="table-responsive">
                     <table class="table table-hover table-striped mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th class="text-center" style="width: 60px;">#</th>
-                                <th>Estudiante</th>
                                 <th>Concepto</th>
                                 <th>Monto</th>
                                 <th>Fecha de Pago</th>
@@ -38,12 +58,17 @@
                             {% for payment in payments %}
                             <tr>
                                 <td class="text-center fw-bold text-muted">{{ loop.index }}</td>
-                                <td>{{ payment.student_name }}</td>
-                                <td>{{ payment.concept_name }}</td>
-                                <td><span class="badge bg-warning text-dark">${{ payment.amount }}</span></td>
+                                <td>
+                                    <span class="badge bg-info">{{ payment.concept_name }}</span>
+                                    <br>
+                                    <small class="text-muted">{{ payment.concept_type }}</small>
+                                </td>
+                                <td><span class="badge bg-warning text-dark">${{ payment.amount|number_format(2) }}</span></td>
                                 <td>{{ payment.payment_date|date('d/m/Y') }}</td>
                                 <td>{{ payment.corresponding_month|date('F Y') }}</td>
-                                <td>{{ payment.payment_method }}</td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ payment.payment_method }}</span>
+                                </td>
                                 <td>{{ payment.reference ?: '—' }}</td>
                                 <td>{{ payment.registered_by }}</td>
                                 <td class="text-center">
@@ -74,8 +99,8 @@
             {% else %}
                 <div class="text-center py-5">
                     <div class="mb-3"><i class="fas fa-money-check-alt fa-3x text-muted"></i></div>
-                    <h5 class="text-muted">No se encontraron pagos registrados</h5>
-                    <p class="text-muted mb-4">Comienza registrando el primer pago en el sistema</p>
+                    <h5 class="text-muted">No se encontraron pagos para este estudiante</h5>
+                    <p class="text-muted mb-4">Registra el primer pago para {{ student.first_name }}</p>
                     <a href="/payments/create" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i>Registrar Primer Pago
                     </a>
@@ -84,7 +109,7 @@
         </div>
         {% if payments %}
         <div class="card-footer bg-light text-muted">
-            <small><i class="fas fa-info-circle me-1"></i>Total de pagos: {{ payments|length }}</small>
+            <small><i class="fas fa-info-circle me-1"></i>Total de pagos: {{ payments|length }} | Monto total: ${{ totalAmount|number_format(2) }}</small>
         </div>
         {% endif %}
     </div>

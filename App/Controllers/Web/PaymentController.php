@@ -9,6 +9,7 @@ use App\Models\Payment;
 use App\Models\Student;
 use App\Models\PaymentConcept;
 use App\Models\User;
+use App\Models\Discount;
 
 class PaymentController extends AbstractController
 {
@@ -42,7 +43,7 @@ class PaymentController extends AbstractController
             'students' => $students,
             'concepts' => $concepts,
             'page_title' => 'Registrar Pago',
-            'active_menu' => 'payments'
+            'active_menu' => 'paymentsCreate'
         ]);
     }
 
@@ -61,7 +62,7 @@ class PaymentController extends AbstractController
             ]);
         }
 
-        $data['registered_by_user_id'] = $this->request->getUserId(); // Asumiendo que el framework tiene esta función
+        $data['registered_by_user_id'] = $this->user()->id;
 
         $payment = Payment::create($data);
 
@@ -123,6 +124,96 @@ class PaymentController extends AbstractController
 
         $payment->delete($id);
         return $this->success([], 'Pago eliminado.', 200, '/payments');
+    }
+
+    /**
+     * Mostrar detalle de un pago específico
+     */
+    public function show(int $id): Response
+    {
+        $payment = $this->getPaymentWithDetails($id);
+        if (!$payment) {
+            return $this->error('Pago no encontrado', 404);
+        }
+
+        // Obtener descuentos del pago
+        $discounts = $payment->discounts();
+        
+        // Calcular monto total manualmente
+        $totalDiscounts = array_sum(array_column($discounts, 'discount_amount'));
+        $payment->total_amount = $payment->amount - $totalDiscounts;
+        
+        // Obtener el concepto para verificar si permite descuentos
+        $concept = PaymentConcept::find($payment->concept_id);
+
+        return $this->render('payments/show.html.twig', [
+            'payment' => $payment,
+            'discounts' => $discounts,
+            'concept' => $concept,
+            'page_title' => 'Detalle del Pago',
+            'active_menu' => 'payments'
+        ]);
+    }
+
+
+    /**
+     * Obtener pagos por estudiante específico
+     */
+    public function byStudent(int $studentId): Response
+    {
+        $student = Student::find($studentId);
+        if (!$student) {
+            return $this->error('Estudiante no encontrado', 404);
+        }
+
+        $payments = DB::table('payments')
+            ->where('student_id', $studentId)
+            ->get();
+
+        foreach ($payments as &$payment) {
+            $concept = PaymentConcept::find($payment['concept_id']);
+            $user = User::find($payment['registered_by_user_id']);
+
+            $payment['concept_name'] = $concept ? $concept->name : 'Sin concepto';
+            $payment['concept_type'] = $concept ? $concept->type : 'Sin tipo';
+            $payment['registered_by'] = $user ? $user->name : 'Sistema';
+        }
+
+
+        $totalAmount = array_reduce($payments, fn($carry, $p) => $carry + $p['amount'], 0);
+
+        return $this->render('payments/by-student.html.twig', [
+            'student' => $student,
+            'payments' => $payments,
+            'totalAmount' => $totalAmount,
+            'page_title' => "Pagos de {$student->first_name} {$student->last_name}",
+            'active_menu' => 'payments'
+        ]);
+
+    }
+
+    /**
+     * Método auxiliar para obtener un pago con todos sus detalles
+     */
+    private function getPaymentWithDetails(int $id)
+    {
+        $payment = Payment::find($id);
+        if (!$payment) {
+            return null;
+        }
+
+        // Obtener información relacionada
+        $student = Student::find($payment->student_id);
+        $concept = PaymentConcept::find($payment->concept_id);
+        $user = User::find($payment->registered_by_user_id);
+
+        // Agregar propiedades adicionales al objeto
+        $payment->student_name = $student ? $student->first_name . ' ' . $student->last_name : 'Sin estudiante';
+        $payment->concept_name = $concept ? $concept->name : 'Sin concepto';
+        $payment->concept_type = $concept ? $concept->type : 'Sin tipo';
+        $payment->registered_by = $user ? $user->name : 'Sistema';
+
+        return $payment;
     }
 }
  

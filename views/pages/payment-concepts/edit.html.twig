@@ -1,0 +1,169 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-edit me-2"></i>Editar Concepto: {{ concept.name }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {# Mostrar errores - Soporte para ambos formatos #}
+                    {% if error is defined %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            {% if error.message is defined %}
+                                {{ error.message }}
+                            {% else %}
+                                {{ error }}
+                            {% endif %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
+                    
+                    <form method="POST" action="/payment-concepts/{{ concept.id }}/update">
+                        <input type="hidden" name="id" value="{{ concept.id }}">
+                        <div class="row">
+                            <!-- Nombre del Concepto -->
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">
+                                    <i class="fas fa-tag me-1"></i>Nombre del Concepto <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="name" 
+                                       name="name" 
+                                       value="{{ old.name ?? concept.name }}" 
+                                       placeholder="Ej: Inscripción Primaria"
+                                       required>
+                            </div>
+
+                            <!-- Tipo de Concepto -->
+                            <div class="col-md-6 mb-3">
+                                <label for="type" class="form-label">
+                                    <i class="fas fa-list me-1"></i>Tipo de Concepto <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="type" name="type" required>
+                                    <option value="">Seleccionar tipo...</option>
+                                    <option value="Enrollment" {% if (old.type ?? concept.type) == 'Enrollment' %}selected{% endif %}>Inscripción</option>
+                                    <option value="Reenrollment" {% if (old.type ?? concept.type) == 'Reenrollment' %}selected{% endif %}>Reinscripción</option>
+                                    <option value="Monthly" {% if (old.type ?? concept.type) == 'Monthly' %}selected{% endif %}>Mensual</option>
+                                    <option value="Other" {% if (old.type ?? concept.type) == 'Other' %}selected{% endif %}>Otro</option>
+                                </select>
+                            </div>
+
+                            <!-- Monto -->
+                            <div class="col-md-6 mb-3">
+                                <label for="amount" class="form-label">
+                                    <i class="fas fa-dollar-sign me-1"></i>Monto <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" 
+                                           class="form-control" 
+                                           id="amount" 
+                                           name="amount" 
+                                           step="0.01" 
+                                           min="0" 
+                                           value="{{ old.amount ?? concept.amount }}" 
+                                           placeholder="0.00"
+                                           required>
+                                </div>
+                            </div>
+
+                            <!-- Frecuencia -->
+                            <div class="col-md-6 mb-3">
+                                <label for="frequency" class="form-label">
+                                    <i class="fas fa-calendar me-1"></i>Frecuencia
+                                </label>
+                                <select class="form-select" id="frequency" name="frequency">
+                                    <option value="One-time" {% if (old.frequency ?? concept.frequency) == 'One-time' %}selected{% endif %}>Único</option>
+                                    <option value="Monthly" {% if (old.frequency ?? concept.frequency) == 'Monthly' %}selected{% endif %}>Mensual</option>
+                                    <option value="Yearly" {% if (old.frequency ?? concept.frequency) == 'Yearly' %}selected{% endif %}>Anual</option>
+                                </select>
+                            </div>
+
+                            <!-- Opciones -->
+                            <div class="col-12 mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Opciones</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" 
+                                                           type="checkbox" 
+                                                           id="discount_applicable" 
+                                                           name="discount_applicable" 
+                                                           value="1"
+                                                           {% if old.discount_applicable is defined %}
+                                                               {% if old.discount_applicable %}checked{% endif %}
+                                                           {% elseif concept.discount_applicable %}
+                                                               checked
+                                                           {% endif %}>
+                                                    <label class="form-check-label" for="discount_applicable">
+                                                        <i class="fas fa-tag me-1"></i>Permite Descuentos
+                                                    </label>
+                                                    <small class="form-text text-muted d-block">
+                                                        Los usuarios podrán aplicar descuentos a los pagos de este concepto
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" 
+                                                           type="checkbox" 
+                                                           id="active" 
+                                                           name="active" 
+                                                           value="1"
+                                                           {% if old.active is defined %}
+                                                               {% if old.active %}checked{% endif %}
+                                                           {% elseif concept.active %}
+                                                               checked
+                                                           {% endif %}>
+                                                    <label class="form-check-label" for="active">
+                                                        <i class="fas fa-check-circle me-1"></i>Activo
+                                                    </label>
+                                                    <small class="form-text text-muted d-block">
+                                                        El concepto estará disponible para usar inmediatamente
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="/payment-concepts/{{ concept.id }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save me-2"></i>Actualizar Concepto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Script de debug temporal - REMOVER EN PRODUCCIÓN #}
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    console.log('Formulario enviado');
+    const formData = new FormData(this);
+    console.log('Datos del formulario:');
+    for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+    }
+});
+</script>
+{% endblock %}

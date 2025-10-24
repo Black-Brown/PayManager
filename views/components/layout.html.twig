@@ -27,8 +27,8 @@
         <div class="menu-section">
             <div class="menu-section-title">Pagos</div>
             <a href="/payments" class="menu-item icon icon-payment {% if active_menu == 'payments' %}active{% endif %}">Registro de Pagos</a>
-            <a href="/payments/create" class="menu-item icon icon-payment">Registrar Pago</a>
-            <a href="/payments/report" class="menu-item icon icon-search">Reportes</a>
+            <a href="/payments/create" class="menu-item icon icon-payment {% if active_menu == 'paymentsCreate' %}active{% endif %}">Registrar Pago</a>
+            <a href="/payment-concepts" class="menu-item icon icon-payment {% if active_menu == 'concepts' %}active{% endif %}">Conceptos de Pago</a>
         </div>
 
         <div class="menu-section">

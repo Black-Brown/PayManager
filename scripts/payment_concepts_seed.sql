@@ -21,3 +21,4 @@ INSERT INTO payment_concepts (name, type, amount, discount_applicable, frequency
 ('Seguro Escolar', 'Enrollment', 50.00, 0, 'One-time', 1),
 ('Material Didáctico', 'Enrollment', 80.00, 1, 'One-time', 1),
 ('Uniforme Escolar', 'Enrollment', 120.00, 1, 'One-time', 1);
+

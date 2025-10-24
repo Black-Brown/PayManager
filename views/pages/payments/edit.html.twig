@@ -1,0 +1,152 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-edit me-2"></i>Editar Pago #{{ payment.id }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if error %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
+
+                    <form method="POST" action="/payments/{{ payment.id }}/update">
+                        <input type="hidden" name="id" value="{{ payment.id }}">
+                        <div class="row">
+                            <!-- Estudiante -->
+                            <div class="col-md-6 mb-3">
+                                <label for="student_id" class="form-label">
+                                    <i class="fas fa-user me-1"></i>Estudiante <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="student_id" name="student_id" required>
+                                    <option value="">Seleccionar estudiante...</option>
+                                    {% for student in students %}
+                                        <option value="{{ student.id }}" 
+                                                {% if payment.student_id == student.id %}selected{% endif %}>
+                                            {{ student.first_name }} {{ student.last_name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Concepto de Pago -->
+                            <div class="col-md-6 mb-3">
+                                <label for="concept_id" class="form-label">
+                                    <i class="fas fa-receipt me-1"></i>Concepto de Pago <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="concept_id" name="concept_id" required>
+                                    <option value="">Seleccionar concepto...</option>
+                                    {% for concept in concepts %}
+                                        <option value="{{ concept.id }}" 
+                                                {% if payment.concept_id == concept.id %}selected{% endif %}>
+                                            {{ concept.name }} ({{ concept.type }})
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Monto -->
+                            <div class="col-md-6 mb-3">
+                                <label for="amount" class="form-label">
+                                    <i class="fas fa-dollar-sign me-1"></i>Monto <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" 
+                                           class="form-control" 
+                                           id="amount" 
+                                           name="amount" 
+                                           step="0.01" 
+                                           min="0" 
+                                           value="{{ payment.amount }}" 
+                                           required>
+                                </div>
+                            </div>
+
+                            <!-- Fecha de Pago -->
+                            <div class="col-md-6 mb-3">
+                                <label for="payment_date" class="form-label">
+                                    <i class="fas fa-calendar me-1"></i>Fecha de Pago <span class="text-danger">*</span>
+                                </label>
+                                <input type="date" 
+                                       class="form-control" 
+                                       id="payment_date" 
+                                       name="payment_date" 
+                                       value="{{ payment.payment_date|date('Y-m-d') }}" 
+                                       required>
+                            </div>
+
+                            <!-- Mes Correspondiente -->
+                            <div class="col-md-6 mb-3">
+                                <label for="corresponding_month" class="form-label">
+                                    <i class="fas fa-calendar-alt me-1"></i>Mes Correspondiente
+                                </label>
+                                <input type="month" 
+                                       class="form-control" 
+                                       id="corresponding_month" 
+                                       name="corresponding_month" 
+                                       value="{{ payment.corresponding_month|date('Y-m') }}">
+                            </div>
+
+                            <!-- Método de Pago -->
+                            <div class="col-md-6 mb-3">
+                                <label for="payment_method" class="form-label">
+                                    <i class="fas fa-credit-card me-1"></i>Método de Pago
+                                </label>
+                                <select class="form-select" id="payment_method" name="payment_method">
+                                    <option value="Cash" {% if payment.payment_method == 'Cash' %}selected{% endif %}>Efectivo</option>
+                                    <option value="Card" {% if payment.payment_method == 'Card' %}selected{% endif %}>Tarjeta</option>
+                                    <option value="Transfer" {% if payment.payment_method == 'Transfer' %}selected{% endif %}>Transferencia</option>
+                                    <option value="Other" {% if payment.payment_method == 'Other' %}selected{% endif %}>Otro</option>
+                                </select>
+                            </div>
+
+                            <!-- Referencia -->
+                            <div class="col-md-6 mb-3">
+                                <label for="reference" class="form-label">
+                                    <i class="fas fa-hashtag me-1"></i>Referencia/Comprobante
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="reference" 
+                                       name="reference" 
+                                       value="{{ payment.reference }}" 
+                                       placeholder="Número de referencia o comprobante">
+                            </div>
+
+                            <!-- Notas -->
+                            <div class="col-12 mb-3">
+                                <label for="notes" class="form-label">
+                                    <i class="fas fa-sticky-note me-1"></i>Notas Adicionales
+                                </label>
+                                <textarea class="form-control" 
+                                          id="notes" 
+                                          name="notes" 
+                                          rows="3" 
+                                          placeholder="Observaciones adicionales...">{{ payment.notes }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="/payments/{{ payment.id }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save me-2"></i>Actualizar Pago
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

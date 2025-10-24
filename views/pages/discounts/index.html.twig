@@ -1,0 +1,161 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Mensajes Flash -->
+            {% if flash.success %}
+                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>{{ flash.success }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endif %}
+            
+            {% if flash.error %}
+                <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>{{ flash.error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endif %}
+
+            <!-- Card Principal -->
+            <div class="card shadow-sm mt-4 mb-4">
+                <div class="card-header bg-warning text-dark py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-tags me-2"></i>Descuentos del Pago #{{ payment.id }}
+                        </h5>
+                        <a href="/payments/{{ payment.id }}" class="btn btn-light">
+                            <i class="fas fa-arrow-left me-2"></i>Volver al Pago
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- Información del Pago -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card border-info">
+                                <div class="card-body">
+                                    <small class="text-muted">Monto Original</small>
+                                    <h4 class="text-success mb-0">${{ payment.amount|number_format(2) }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-danger">
+                                <div class="card-body">
+                                    <small class="text-muted">Total Descuentos</small>
+                                    <h4 class="text-danger mb-0">
+                                        -${% set total_discount = 0 %}
+                                        {% for discount in discounts %}
+                                            {% set total_discount = total_discount + discount.discount_amount %}
+                                        {% endfor %}
+                                        {{ total_discount|number_format(2) }}
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-primary">
+                                <div class="card-body">
+                                    <small class="text-muted">Monto Final</small>
+                                    <h4 class="text-primary mb-0">${{ payment.total_amount|number_format(2) }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lista de Descuentos -->
+                    {% if discounts is not empty %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-warning">
+                                    <tr>
+                                        <th width="5%">#</th>
+                                        <th width="15%">Monto</th>
+                                        <th width="40%">Razón</th>
+                                        <th width="15%">Aplicado por</th>
+                                        <th width="15%">Fecha</th>
+                                        <th width="10%" class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for discount in discounts %}
+                                    <tr>
+                                        <td class="fw-bold text-muted">#{{ discount.id }}</td>
+                                        <td>
+                                            <span class="badge bg-danger fs-6">
+                                                -${{ discount.discount_amount|number_format(2) }}
+                                            </span>
+                                        </td>
+                                        <td>{{ discount.reason }}</td>
+                                        <td>
+                                            <small class="text-muted">
+                                                <i class="fas fa-user me-1"></i>
+                                                {% if discount.applied_by_user_id %}
+                                                    Usuario #{{ discount.applied_by_user_id }}
+                                                {% else %}
+                                                    Sistema
+                                                {% endif %}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <small>{{ discount.created_at|date('d/m/Y H:i') }}</small>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <a href="/payments/{{ payment.id }}/discount/{{ discount.id }}/edit" 
+                                                   class="btn btn-sm btn-outline-primary"
+                                                   title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="/payments/{{ payment.id }}/discount/{{ discount.id }}/delete" 
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   onclick="return confirm('¿Eliminar este descuento de ${{ discount.discount_amount|number_format(2) }}?');"
+                                                   title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <td colspan="5" class="text-end fw-bold">Total de Descuentos:</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-danger fs-6">
+                                                -${{ total_discount|number_format(2) }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No hay descuentos aplicados a este pago</h5>
+                            <p class="text-muted">Los descuentos que apliques aparecerán aquí</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Total de descuentos: {{ discounts|length }}
+                        </small>
+                        <a href="/payments/{{ payment.id }}" class="btn btn-primary">
+                            <i class="fas fa-eye me-2"></i>Ver Detalle del Pago
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

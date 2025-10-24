@@ -1,0 +1,191 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Mensajes Flash -->
+            {% if flash.success %}
+                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>{{ flash.success }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endif %}
+            
+            {% if flash.error %}
+                <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>{{ flash.error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endif %}
+
+            <!-- Card de Edición -->
+            <div class="card shadow-sm mt-4 mb-4">
+                <div class="card-header bg-warning text-dark py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-edit me-2"></i>Editar Descuento #{{ discount.id }}
+                        </h5>
+                        <a href="/payments/{{ payment.id }}" class="btn btn-light btn-sm">
+                            <i class="fas fa-arrow-left me-2"></i>Volver
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- Información del Pago -->
+                    <div class="alert alert-info mb-4">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <small class="d-block text-muted">Pago #{{ payment.id }}</small>
+                                <strong>Monto Original:</strong> ${{ payment.amount|number_format(2) }}
+                            </div>
+                            <div class="col-md-4">
+                                {% set total_other_discounts = 0 %}
+                                {% for d in payment.discounts() %}
+                                    {% if d.id != discount.id %}
+                                        {% set total_other_discounts = total_other_discounts + d.discount_amount %}
+                                    {% endif %}
+                                {% endfor %}
+                                <small class="d-block text-muted">Otros Descuentos</small>
+                                <strong class="text-danger">-${{ total_other_discounts|number_format(2) }}</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <small class="d-block text-muted">Disponible para Descuento</small>
+                                <strong class="text-success">${{ (payment.amount - total_other_discounts)|number_format(2) }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulario de Edición -->
+                    <form method="POST" action="/payments/{{ payment.id }}/discount/{{ discount.id }}/update">
+                        <input type="hidden" name="id" value="{{ discount.id }}">
+                        <div class="row">
+                            <!-- Monto del Descuento -->
+                            <div class="col-md-6 mb-3">
+                                <label for="discount_amount" class="form-label fw-bold">
+                                    <i class="fas fa-dollar-sign me-1"></i>Monto del Descuento
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" 
+                                           class="form-control form-control-lg" 
+                                           id="discount_amount" 
+                                           name="discount_amount" 
+                                           step="0.01" 
+                                           min="0.01" 
+                                           max="{{ payment.amount }}" 
+                                           value="{{ discount.discount_amount }}"
+                                           required>
+                                </div>
+                                <small class="text-muted">
+                                    Monto actual: ${{ discount.discount_amount|number_format(2) }}
+                                </small>
+                            </div>
+
+                            <!-- Fecha de Aplicación (solo lectura) -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-calendar me-1"></i>Fecha de Aplicación
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       value="{{ discount.created_at|date('d/m/Y H:i') }}" 
+                                       readonly>
+                                <small class="text-muted">
+                                    No se puede modificar la fecha
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Razón del Descuento -->
+                        <div class="mb-4">
+                            <label for="reason" class="form-label fw-bold">
+                                <i class="fas fa-comment-dots me-1"></i>Razón del Descuento
+                                <span class="text-danger">*</span>
+                            </label>
+                            <textarea class="form-control" 
+                                      id="reason" 
+                                      name="reason" 
+                                      rows="4" 
+                                      placeholder="Describe la razón del descuento..."
+                                      required>{{ discount.reason }}</textarea>
+                            <small class="text-muted">
+                                Proporciona una descripción clara del motivo del descuento
+                            </small>
+                        </div>
+
+                        <!-- Información Adicional -->
+                        <div class="card bg-light mb-4">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>Información Actual
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <small class="d-block text-muted">Aplicado por:</small>
+                                        <span>
+                                            {% if discount.applied_by_user_id %}
+                                                Usuario #{{ discount.applied_by_user_id }}
+                                            {% else %}
+                                                Sistema
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="d-block text-muted">Última actualización:</small>
+                                        <span>
+                                            {% if discount.updated_at %}
+                                                {{ discount.updated_at|date('d/m/Y H:i') }}
+                                            {% else %}
+                                                Nunca
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="/payments/{{ payment.id }}" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancelar
+                            </a>
+                            
+                            <div class="d-flex gap-2">
+                                <a href="/payments/{{ payment.id }}/discount/{{ discount.id }}/delete" 
+                                   class="btn btn-danger"
+                                   onclick="return confirm('¿Estás seguro de eliminar este descuento?\n\nMonto: ${{ discount.discount_amount|number_format(2) }}\nRazón: {{ discount.reason }}');">
+                                    <i class="fas fa-trash me-2"></i>Eliminar
+                                </a>
+                                
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="fas fa-save me-2"></i>Guardar Cambios
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Card de Ayuda -->
+            <div class="card border-info mb-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-question-circle me-2"></i>¿Necesitas ayuda?
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li>El monto del descuento no puede exceder el monto disponible del pago</li>
+                        <li>Se toman en cuenta otros descuentos aplicados al mismo pago</li>
+                        <li>La razón del descuento debe ser descriptiva y clara</li>
+                        <li>Los cambios quedarán registrados con tu usuario y fecha</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
