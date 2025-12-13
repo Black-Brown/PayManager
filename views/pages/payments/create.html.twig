@@ -44,7 +44,8 @@
                                 <select class="form-select form-select-lg" id="student_id" name="student_id" required>
                                     <option value="">-- Seleccione un estudiante --</option>
                                     {% for student in students %}
-                                        <option value="{{ student.id }}" {% if old.student_id == student.id %}selected{% endif %}>
+                                        <option value="{{ student.id }}" 
+                                            {% if old.student_id == student.id or preselected_student_id == student.id %}selected{% endif %}>
                                             {{ student.first_name }} {{ student.last_name }}
                                         </option>
                                     {% endfor %}
@@ -72,7 +73,8 @@
                                 <select class="form-select" id="concept_id" name="concept_id" required>
                                     <option value="">-- Seleccione un concepto --</option>
                                     {% for concept in concepts %}
-                                        <option value="{{ concept.id }}" {% if old.concept_id == concept.id %}selected{% endif %}>
+                                        <option value="{{ concept.id }}" 
+                                            {% if old.concept_id == concept.id or (preselected_concept_type and concept.type == preselected_concept_type) %}selected{% endif %}>
                                             {{ concept.name }} ({{ concept.type }})
                                         </option>
                                     {% endfor %}
@@ -126,7 +128,7 @@
                                        class="form-control" 
                                        id="corresponding_month" 
                                        name="corresponding_month"
-                                       value="{{ old.corresponding_month }}"
+                                       value="{{ old.corresponding_month|default(preselected_month) }}"
                                        required>
                                 <div class="form-text">Mes al que corresponde el pago</div>
                             </div>

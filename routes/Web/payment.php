@@ -2,6 +2,7 @@
 
 use App\Controllers\Web\PaymentController;
 use App\Controllers\Web\DiscountController;
+use App\Controllers\Web\MonthlyPaymentController;
 
 return [
     // === RUTAS DE PAGOS ===
@@ -24,6 +25,10 @@ return [
     
     // Reporte de pagos (comentado por ahora)
     // ['GET', '/payments/report', [PaymentController::class, 'report'], 'auth'],
+
+    // // === CONTROL DE MENSUALIDADES ===
+    // ['GET', '/payments/monthly', [MonthlyPaymentController::class, 'index'], 'auth'],
+    // ['GET', '/payments/monthly/create/{studentId}/{month}', [MonthlyPaymentController::class, 'create'], 'auth'],
     
     // === RUTAS DE DESCUENTOS ===
     // Listar descuentos de un pago

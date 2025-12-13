@@ -37,6 +37,11 @@ class PaymentConcept extends Model
         return self::where('type', $type)->where('active', true)->get();
     }
 
+    public static function monthlyConcepts()
+    {
+        return self::where('type', 'Monthly')->where('active', true)->get();
+    }
+
     public function allowsDiscount()
     {
         return $this->discount_applicable;

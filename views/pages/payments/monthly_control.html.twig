@@ -1,0 +1,81 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">{{ page_title }}</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Control Mensual</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <i class="fas fa-table me-1"></i>
+                Control de Pagos - Año {{ year }}
+            </div>
+            <div class="btn-group" role="group">
+                <a href="/payments/monthly?year={{ year - 1 }}" class="btn btn-outline-secondary btn-sm">&laquo; {{ year - 1 }}</a>
+                <span class="btn btn-secondary btn-sm disabled">{{ year }}</span>
+                <a href="/payments/monthly?year={{ year + 1 }}" class="btn btn-outline-secondary btn-sm">{{ year + 1 }} &raquo;</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-striped" id="monthlyTable">
+                    <thead>
+                        <tr>
+                            <th>Estudiante</th>
+                            {% for key, name in months %}
+                                <th class="text-center">{{ name|slice(0, 3) }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                            <tr>
+                                <td>
+                                    {{ student.first_name }} {{ student.last_name }}
+                                    <br>
+                                    <small class="text-muted">{{ student.enrollment_number }}</small>
+                                </td>
+                                {% for key, name in months %}
+                                    {% set isPaid = paymentMatrix[student.id][key] is defined %}
+                                    <td class="text-center align-middle">
+                                        {% if isPaid %}
+                                            <a href="/payments/{{ paymentMatrix[student.id][key].id }}" 
+                                               class="btn btn-success btn-sm rounded-circle" 
+                                               title="Pagado: {{ paymentMatrix[student.id][key].payment_date }}"
+                                               data-bs-toggle="tooltip">
+                                                <i class="fas fa-check"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="/payments/monthly/create/{{ student.id }}/{{ year }}-{{ key }}" 
+                                               class="btn btn-outline-secondary btn-sm rounded-circle"
+                                               title="Registrar pago para {{ name }}"
+                                               data-bs-toggle="tooltip">
+                                                <i class="fas fa-plus"></i>
+                                                
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Inicializar tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
+{% endblock %}
