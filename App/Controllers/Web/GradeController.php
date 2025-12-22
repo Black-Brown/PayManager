@@ -2,95 +2,119 @@
 
 namespace App\Controllers\Web;
 
+use App\Repositories\GradeRepository;
 use JosueIsOffline\Framework\Controllers\AbstractController;
 use JosueIsOffline\Framework\Http\Response;
-use JosueIsOffline\Framework\Database\DB;
-use App\Models\Grade;
 
 class GradeController extends AbstractController
 {
-    public function index(): Response
-    {
-        $grades = Grade::all();
-        return $this->render('grades/index.html.twig', [
-            'grades' => $grades,
-            'page_title' => 'Grados Académicos',
-            'active_menu' => 'grades'
-        ]);
+  protected GradeRepository $gradeRepo;
+
+  public function __construct()
+  {
+    parent::__construct();
+    $this->gradeRepo = new GradeRepository();
+  }
+
+  public function index(): Response
+  {
+    $grades = $this->gradeRepo->getAll();
+
+    return $this->render('grades/index.html.twig', [
+      'grades' => $grades,
+      'page_title' => 'Grados Académicos',
+      'active_menu' => 'grades'
+    ]);
+  }
+
+  public function createForm(): Response
+  {
+    $levels = $this->gradeRepo->getLevels();
+
+    return $this->render('grades/create.html.twig', [
+      'page_title' => 'Crear Grado',
+      'active_menu' => 'grades',
+      'levels' => $levels
+    ]);
+  }
+
+  public function store(): Response
+  {
+    $levels = $this->gradeRepo->getLevels();
+
+    $name = trim($_POST['name'] ?? '');
+    $level = trim($_POST['level'] ?? '');
+    $grade_order = trim($_POST['grade_order'] ?? '');
+
+    if ($name === '' || $level === '' || $grade_order === '') {
+      return $this->renderWithFlash('grades/create.html.twig', [
+        'error' => 'Los campos son obligatorios',
+        'old' => $_POST,
+        'levels' => $levels
+      ]);
     }
 
-    public function createForm(): Response
-    {
-        return $this->render('grades/create.html.twig', [
-            'page_title' => 'Crear Grado',
-            'active_menu' => 'grades',
-            'niveles' => ['Preescolar', 'Primaria', 'Secundaria', 'Bachillerato']
-        ]);
+    $this->gradeRepo->create([
+      'name' => $name,
+      'level' => $level,
+      'grade_order' => $grade_order
+    ]);
+
+    return $this->success([], 'Grado creado.', 200, '/grades');
+  }
+
+  public function editForm(int $id): Response
+  {
+    $grade = $this->gradeRepo->FindById($id);
+    $levels = $this->gradeRepo->getLevels();
+    if (!$grade) {
+      return $this->renderWithFlash('grades/edit.html.twig', [
+        'error' => 'Grado no encontrado'
+      ], 404);
     }
 
-    public function store(): Response
-    {
-        $data = $this->request->getAllPost();
+    return $this->render('grades/edit.html.twig', [
+      'grade' => $grade,
+      'page_title' => 'Editar Grado',
+      'active_menu' => 'grades',
+      'levels' => $levels
+    ]);
+  }
 
-        if (empty($data['name']) || empty($data['level']) || empty($data['grade_order'])) {
-            return $this->renderWithFlash('grades/create.html.twig', [
-                'error' => 'Todos los campos son obligatorios.',
-                'old' => $data
-            ]);
-        }
+  public function update(int $id): Response
+  {
+    $levels = $this->gradeRepo->getLevels();
 
-        $existingGrade = DB::table('grades')
-            ->where('name', $data['name'])
-            ->first();
+    $name = trim($_POST['name'] ?? '');
+    $level = trim($_POST['level'] ?? '');
+    $grade_order = trim($_POST['grade_order'] ?? '');
 
-        if ($existingGrade) {
-            return $this->renderWithFlash('grades/create.html.twig', [
-                'error' => 'Ya existe un grado con ese nombre.',
-                'old' => $data
-            ]);
-        }
-
-        Grade::create($data);
-        return $this->success([], 'Grado creado correctamente.', 201, '/grades');
+    if ($name === '' || $level === '' || $grade_order === '') {
+      return $this->renderWithFlash('grades/edit.html.twig', [
+        'error' => 'Los campos son obligatorios',
+        'old' => $_POST,
+        'levels' => $levels
+      ]);
     }
 
-    public function editForm(int $id): Response
-    {
-        $grade = Grade::find($id);
-        if (!$grade) {
-            return $this->error('Grado no encontrado', 404);
-        }
+    $this->gradeRepo->update($id, [
+      'name' => $name,
+      'level' => $level,
+      'grade_order' => $grade_order
+    ]);
 
-        return $this->render('grades/edit.html.twig', [
-            'grade' => $grade,
-            'page_title' => 'Editar Grado',
-            'active_menu' => 'grades',
-            'niveles' => ['Preescolar', 'Primaria', 'Secundaria', 'Bachillerato']
-        ]);
+    return $this->success([], 'Grado actualizado.', 200, '/grades');
+  }
+
+  public function destroy(int $id): Response
+  {
+    $grade = $this->gradeRepo->destroy($id);
+    if (!$grade) {
+      return $this->renderWithFlash('grades/edit.html.twig', [
+        'error' => 'Grado no encontrado'
+      ], 404);
     }
 
-    public function update(int $id): Response
-    {
-        $grade = Grade::find($id);
-        if (!$grade) {
-            return $this->error('Grado no encontrado', 404);
-        }
-
-        $data = $this->request->getAllPost();
-        $grade->update($data);
-
-        return $this->success([], 'Grado actualizado.', 200, '/grades');
-    }
-
-    public function destroy(int $id): Response
-    {
-        $grade = Grade::find($id);
-        if (!$grade) {
-            return $this->error('Grado no encontrado', 404);
-        }
-
-        $grade->delete($id);
-        return $this->success([], 'Grado eliminado.', 200, '/grades');
-    }
-
+    return $this->redirect('/grades');
+  }
 }

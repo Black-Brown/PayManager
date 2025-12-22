@@ -29,6 +29,7 @@
                    id="name" 
                    name="name" 
                    placeholder="Ej: Primer Grado, Segundo Grado..."
+                   value = "{{ old.name }}"
                    required
                    maxlength="50">
             <div class="invalid-feedback">
@@ -47,8 +48,10 @@
 
               <select class="form-control" id="level" name="level" required>
                 <option value="">Seleccione un nivel</option>
-                {% for nivel in niveles %}
-                <option value="{{ nivel }}">{{ nivel }}</option>
+                {% for lvl in levels %}
+                <option value="{{ lvl }}" {{ (old.level ?? '') == lvl ? 'selected' : '' }}>
+                  {{ lvl }}
+                </option>
                 {% endfor %}
               </select>
 
@@ -67,6 +70,7 @@
                    id="grade_order" 
                    name="grade_order" 
                    placeholder="Ej: 1, 2, 3..."
+                   value="{{ old.grade_order }}"
                    required
                    min="1"
                    max="20">

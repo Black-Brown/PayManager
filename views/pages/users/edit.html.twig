@@ -23,13 +23,13 @@
           <!-- Nombre -->
           <div class="col-md-6 mb-4">
             <label for="name" class="form-label fw-semibold">Nombre completo <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="name" name="name" required maxlength="100" value="{{ user.name }}">
+            <input type="text" class="form-control" id="name" name="name" required maxlength="100" value="{{ old.name ?? user.name ?? '' }}">
           </div>
 
           <!-- Correo -->
           <div class="col-md-6 mb-4">
             <label for="email" class="form-label fw-semibold">Correo electrónico <span class="text-danger">*</span></label>
-            <input type="email" class="form-control" id="email" name="email" required maxlength="100" value="{{ user.email }}">
+            <input type="email" class="form-control" id="email" name="email" required maxlength="100" value="{{ old.email ?? user.email ?? '' }}">
           </div>
 
           <!-- Contraseña -->
@@ -56,23 +56,31 @@
 
 
           <!-- Rol -->
+          {% set old = old|default({}) %}
+
           <div class="col-md-6 mb-4">
             <label for="role_id" class="form-label fw-semibold">Rol <span class="text-danger">*</span></label>
+
+            {% set selectedRole = (old.role_id ?? user.role_id ?? '') ~ '' %}
             <select class="form-control" id="role_id" name="role_id" required>
-              <option value="">Seleccione un rol</option>
-              {% for role in roles %}
-              <option value="{{ role.id }}" {% if role.id == user.role_id %}selected{% endif %}>{{ role.name }}</option>
-              {% endfor %}
+              <option value="" {% if selectedRole == '' %}selected{% endif %}>Seleccione un rol</option>
+             {% for role in roles %}
+                <option value="{{ role.id }}" {% if selectedRole == (role.id ~ '') %}selected{% endif %}>
+                  {{ role.name }}
+                </option>
+             {% endfor %}
             </select>
           </div>
 
           <!-- Estado -->
+          {% set activeValue = (old.active ?? user.active ?? 1) ~ '' %}
+
           <div class="col-md-6 mb-4">
             <label for="active" class="form-label fw-semibold">Activo</label>
             <select class="form-control" id="active" name="active">
               <option value="">Seleccione</option>
-              <option value="1" {% if user.active == 1 %}selected{% endif %}>Sí</option>
-              <option value="0" {% if user.active == 0 %}selected{% endif %}>No</option>
+              <option value="1" {% if activeValue == '1' %}selected{% endif %}>Sí</option>
+              <option value="0" {% if activeValue == '0' %}selected{% endif %}>No</option>
             </select>
           </div>
         </div>

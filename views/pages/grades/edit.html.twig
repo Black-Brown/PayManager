@@ -12,9 +12,9 @@
     </div>
     <div class="card-body">
       <form action="/grades/{{ grade.id }}/update" method="POST" id="gradeForm" novalidate>
-        <input type="hidden" name="id" value="{{ grade.id }}">
+        <input type="hidden" name="id" value="{{ old.id ?? grade.id ?? ''}}">
         <div class="row">
-          <!-- Nombre -->
+          <!-- Nombre --> 
           <div class="col-md-6 mb-4">
             <label for="name" class="form-label fw-semibold">
               <i class="fas fa-tag me-1 text-muted"></i>Nombre del Grado <span class="text-danger">*</span>
@@ -30,14 +30,24 @@
           </div>
 
           <!-- Nivel -->
+          {% set old = old|default({}) %}
+          {% set selectedLevel = (old.level|default(grade.level|default(''))) ~ '' %}
+
           <div class="col-md-6 mb-4">
             <label for="level" class="form-label fw-semibold">
               <i class="fas fa-layer-group me-1 text-muted"></i>Nivel <span class="text-danger">*</span>
             </label>
+
+            {% set selectedLevel = (old.level ?? grade.level ?? '') ~ '' %}
             <select class="form-control" id="level" name="level" required>
-              <option value=""> {{grade.level}} </option>
-              {% for nivel in niveles %}
-              <option value="{{ nivel }}" {% if grade.level == nivel %}selected{% endif %}>{{ nivel }}</option>
+              <option value="" {% if selectedLevel == '' %}selected{% endif %}> 
+                Seleccione un nivel 
+              </option>
+
+              {% for lvl in levels %}
+              <option value="{{ lvl }}" {% if selectedLevel == (lvl ~ '') %}selected{% endif %}>
+                {{ lvl }}
+              </option>
               {% endfor %}
             </select>
           </div>
@@ -51,7 +61,7 @@
                    class="form-control" 
                    id="grade_order" 
                    name="grade_order" 
-                   value="{{ grade.grade_order }}"
+                   value="{{ old.grade_order ?? grade.grade_order ?? '' }}"
                    placeholder="Ej: 1, 2, 3..."
                    required
                    min="1"
@@ -62,15 +72,19 @@
         <div class="row mt-4">
           <div class="col-12">
             <div class="d-flex justify-content-between align-items-center border-top pt-3">
-              <a href="/grades" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Cancelar
-              </a>
-              <button type="submit" class="btn btn-warning">
-                <i class="fas fa-save me-2"></i>Guardar Grado
-              </button>
+              <div class="text-muted small">
+                <i class="fas fa-asterisk me-1"></i>Los campos marcados con <span class="text-danger">*</span> son obligatorios
+              </div>
+              <div class="btn-group" role="group">
+                <a href="/grades" class="btn btn-outline-secondary">
+                  <i class="fas fa-arrow-left me-2"></i>Cancelar
+                </a>
+                <button type="submit" class="btn btn-warning">
+                  <i class="fas fa-save me-2"></i>Actualizar Grado
+                </button>
+              </div>
             </div>
           </div>
-        </div>
       </form>
     </div>
   </div>
